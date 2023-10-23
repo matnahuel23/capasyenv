@@ -15,58 +15,55 @@ const usersService = new User()
 const cartsService = new Cart()
 
 const initializePassport = () => {
-    // Configuración de la estrategia local de registro
+    configureLocalStrategy();
+    configureGitHubStrategy();
+    configureSerialization();
+};
+
+const configureLocalStrategy = () => {
+// Configuración de la estrategia local de registro
     passport.use('register', new localStrategy(
-    { passReqToCallback: true, usernameField: 'email'}, async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
-        try {
-            let user = await usersService.getUserByEmail(username);
-            if (user) {
-                console.log("El usuario ya existe");
-                return done(null, false);
-            }
-            
-            // Crear el carrito primero
-            const newCart = await cartsService.createCart({
-                products: [],
-                total: 0
-            });
+        { passReqToCallback: true, usernameField: 'email'}, async (req, username, password, done) => {
+            const { first_name, last_name, email, age } = req.body;
+            try {
+                let user = await usersService.getUserByEmail(username);
+                if (user) {
+                    console.log("El usuario ya existe");
+                    return done(null, false);
+                }
+                
+                // Crear el carrito primero
+                const newCart = await cartsService.createCart({
+                    products: [],
+                    total: 0
+                });
 
-            const newUser = {
-                first_name,
-                last_name,
-                email,
-                age,
-                password: createHash(password),
-                cart: newCart._id
-            }
+                const newUser = {
+                    first_name,
+                    last_name,
+                    email,
+                    age,
+                    password: createHash(password),
+                    cart: newCart._id
+                }
 
-            if (email === admin) {
-                newUser.role = "admin";
-            }
+                if (email === admin) {
+                    newUser.role = "admin";
+                }
 
-            // Crear el usuario después de crear el carrito
-            let result = await usersService.createUser(newUser);
-            return done(null, result);
-        } catch (error) {
-            console.error("Error en el registro:", error);
-            return done(error);
+                // Crear el usuario después de crear el carrito
+                let result = await usersService.createUser(newUser);
+                return done(null, result);
+            } catch (error) {
+                console.error("Error en el registro:", error);
+                return done(error);
+            }
         }
-    }
-    ));
-    // Serialización del usuario
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
-    });
-    // Deserialización del usuario
-    passport.deserializeUser(async (id, done) => {
-        let user = await usersService.getUserById(id);
-        done(null, user);
-    });
+        ));
     // Configuración de la estrategia local de inicio de sesión
-    passport.use('login', new localStrategy({ usernameField: 'email' }, async (username, password, done) => {
+    passport.use('login', new localStrategy({ usernameField: 'email' }, async (email, password, done) => {
         try {
-            const user = await userModel.getUserByEmail({ email: username });
+            const user = await usersService.getUserByEmail(email);
             if (!user) {
                 console.log('El usuario no existe');
                 return done(null, false);
@@ -81,6 +78,9 @@ const initializePassport = () => {
             return done(error);
         }
     }));
+    
+}
+const configureGitHubStrategy = () => { 
     // Configuración de la estrategia de registro con GitHub, previamente instale passport-github2
     passport.use('github', new GitHubStrategy({
         clientID: clientID,
@@ -115,4 +115,16 @@ const initializePassport = () => {
     }))
 }
 
-export default initializePassport;
+const configureSerialization = () => { 
+    // Serialización del usuario
+    passport.serializeUser((user, done) => {
+        done(null, user._id);
+    });
+    // Deserialización del usuario
+    passport.deserializeUser(async (id, done) => {
+        let user = await usersService.getUserById(id);
+        done(null, user);
+    })
+}
+
+export default initializePassport

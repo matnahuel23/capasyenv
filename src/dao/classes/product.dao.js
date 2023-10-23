@@ -41,16 +41,6 @@ export default class Product {
         }
     }
 
-    updateProductStock = async (pid, quantity) => {
-        try {
-            let result = await productModel.updateOne({ _id: pid }, { $inc: { stock: -quantity } })
-            return result
-        } catch (error) {
-            console.log(error)
-            return null
-        }
-    }
-
     deleteProduct = async (pid) => {
         try {
             let result = await productModel.deleteOne({ _id: pid })

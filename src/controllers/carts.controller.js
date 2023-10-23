@@ -69,8 +69,10 @@ export const updateCart = async (req, res) => {
             cartAdd.products.push({ product: pid, quantity });
         }
         cartAdd.markModified('products');
+        const newStock = product.stock-quantity
+        product.stock = newStock
         await cartsService.updateCart(cid, cartAdd);
-        await productsService.updateProductStock(pid, quantity);
+        await productsService.updateProduct(pid, product);
         // Actualiza el total del carrito
         const newTotal = cartAdd.total + (product.price * quantity);
         const totalUpdateResult = await cartsService.updateCartTotal(cid, newTotal);
@@ -111,50 +113,37 @@ export const deleteProductOfCart = async (req, res) => {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = parseInt(req.body.quantity);
-
         if (quantity <= 0) {
             return res.status(400).json({ error: 'La cantidad debe ser mayor que 0.' });
         }
-
         const cart = await cartsService.getCartById(cid);
-
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado.' });
         }
-
-        const productIndex = cart.products.findIndex((item) => item.product.toString() === pid);
-
-        if (productIndex === -1) {
-            return res.status(404).json({ error: 'Producto no encontrado en el carrito.' });
-        }
-
         const product = await productsService.getProductById(pid);
-
         if (!product) {
             return res.status(404).json({ error: 'Producto no encontrado.' });
         }
-
+        const productIndex = await cartsService.indexProductInCart(cid, pid);
+        if (productIndex === -1) {
+            return res.status(404).json({ error: 'Producto no encontrado en el carrito.' });
+        }
         const cartProduct = cart.products[productIndex];
-
         if (cartProduct.quantity < quantity) {
             return res.status(400).json({ error: 'La cantidad a eliminar es mayor que la cantidad en el carrito.' });
         }
-
         // Restar la cantidad del producto en el carrito
         cartProduct.quantity -= quantity;
-
         // Actualizar el stock del producto y el total del carrito
         product.stock += quantity;
         const productTotal = product.price * quantity;
         cart.total -= productTotal;
-
         if (cartProduct.quantity === 0) {
-            // Si la cantidad llega a 0, eliminar el producto del carrito
+        // Si la cantidad llega a 0, eliminar el producto del carrito
             cart.products.splice(productIndex, 1);
         }
-
-        await productsService.updateProduct({ _id: pid }, { stock: product.stock });
-        await cartsService.updateCart({ _id: cid }, cart);
+        await productsService.updateProduct(pid, product);
+        await cartsService.updateCart(cid, cart);
 
         res.json({ message: 'Producto eliminado del carrito correctamente.' });
     } catch (error) {

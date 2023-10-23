@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
-import config from "../config/config.js"
+import { getProducts } from '../controllers/products.controller.js'
+import { createUser, logUser, updateUser } from '../controllers/users.controller.js'
 import path from "path"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -8,9 +9,16 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const router = express.Router();
-const admin = config.adminName
 
 // Rutas
+router.post('/restore', updateUser)
+
+router.post('/register', createUser)
+
+router.post('/login', logUser) 
+
+router.get('/products', getProducts)
+
 router.get('/', (req, res) => {
     res.render('login.hbs');
 });
@@ -22,18 +30,6 @@ router.get('/restore', (req, res) => {
 
 router.get('/faillogin', (req, res) => {
     res.redirect('/')
-});
-
-function auth(req, res, next) {
-    if (req.session?.admin) {
-        return next();
-    }
-    return res.status(401).send('Error de autorización');
-}
-
-// Acceso solo del administrador
-router.get('/privado', auth, (req, res) => {
-    res.send('Si estás viendo esto es porque ya te logueaste como administrador');
 });
 
 router.get('/admin', async (req, res) => {
@@ -88,37 +84,5 @@ router.get('/githubcallback', passport.authenticate('github',{failureRedirect:'l
     req.session.user = req.user
     res.redirect('/products');
 })
-
-router.post('/login', (req, res, next) => {
-    passport.authenticate('login', (err, user, info) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Error en el inicio de sesión' });
-        }
-        if (!user) {
-            return res.status(400).json({ error: 'Credenciales inválidas' });
-        }
-
-        // Guarda el ID de la sesión en una cookie personalizada
-        res.cookie('sessionID', req.sessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
-
-        req.session.user = {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            age: user.age,
-            email: user.email,
-            cart: user.cart // Agrega los datos del carrito a la sesión
-        };
-
-        // Verificar si el usuario es administrador
-        if (user.email === admin) {
-            req.session.admin = true;
-            return res.redirect('/admin');
-        } else {
-            req.session.admin = false;
-            res.redirect('/products');
-        }
-    })(req, res, next);
-});
 
 export default router;

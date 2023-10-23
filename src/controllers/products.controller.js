@@ -1,34 +1,37 @@
-import Products from "../dao/classes/product.dao.js"
+import Products from "../dao/classes/product.dao.js";
+import path from "path"
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const productsService = new Products()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const productsService = new Products();
+
 export const getProducts = async (req, res) => {
     try {
         const { sort, category, status, page, limit } = req.query;
-        
         // Parsea el valor de sort a un número entero
         const priceSort = sort ? parseInt(sort) : 1;
-
         // Define las condiciones de búsqueda
         const conditions = {};
-
         // Agrega la condición de filtrado por categoría si se proporciona
         if (category) {
             conditions.category = category;
         }
-
         // Agrega la condición de filtrado por status si se proporciona
         if (status !== undefined) {
             conditions.status = status === 'true'; // Convierte el valor a booleano
         }
-
         // Realiza la consulta utilizando paginate()
         const options = {
             page: page || 1, // Página actual
             limit: limit || 10, // Cantidad de resultados por página
             sort: { price: priceSort }, // Ordenar por precio
-        };
-        const products = await productsService.paginate(conditions, options);
-        res.send({result: "sucess", payload: products})
+        }
+        const products = await productsService.paginate(conditions, options)
+        const viewPath = path.join(__dirname, '../views/products.hbs');
+        const { first_name, email, age, cart } = req.session.user;
+        res.render(viewPath, { products, first_name, email, age, cart})
     } catch (error) {
         res.status(500).send({ status: "error", error: 'Error al mostrar productos. Detalles: ' + error.message });
     }
@@ -77,31 +80,27 @@ export const createProducts = async (req, res) => {
 }
 export const updateProduct = async (req, res) => {
     try {
-        let {pid} = req.params;
+        let { pid } = req.params;
         const productToReplace = req.body;
-
         // Validamos que se proporcionen campos para actualizar
         if (Object.keys(productToReplace).length === 0) {
-            return res.send({ status:"error", error: 'Debe proporcionar al menos un campo para actualizar.' });
+            return res.send({ status: "error", error: 'Debe proporcionar al menos un campo para actualizar.' });
         }
-
         // Verificamos si el stock es igual a 0 y actualizo el status
         if (productToReplace.stock == "0") {
-            productToReplace.status = false
+            productToReplace.status = false;
+        } else {
+            productToReplace.status = true;
         }
-        else{
-            productToReplace.status = true
-        }
-
-        let result = await productsService.updateProduct({_id: pid}, productToReplace)
+        let result = await productsService.updateProduct(pid, productToReplace);
         if (!result) {
-            return res.send({ status:"error", error: 'Producto no encontrado.' });
+            return res.send({ status: "error", error: 'Producto no encontrado.' });
         }
-
         // Actualizamos los campos del producto encontrado
-        res.send({ result: "success", payload: result })
+        res.send({ result: "success", payload: result });
     } catch (error) {
-        res.send({ status:"error", error: 'Error al actualizar el producto.' });
+        console.error(`Error: ${error}`);
+        res.send({ status: "error", error: 'Error al actualizar el producto.' });
     }
 }
 export const deleteProduct = async (req, res) => {

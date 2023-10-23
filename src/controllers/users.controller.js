@@ -2,7 +2,9 @@ import UserDAO from "../dao/classes/user.dao.js";
 import CartDAO from "../dao/classes/cart.dao.js";
 import passport from "passport";
 import { createHash } from "../utils/bcrypt.js";
+import config from "../config/config.js"
 
+const admin = config.adminName
 const usersService = new UserDAO();
 const cartsService = new CartDAO();
 
@@ -26,14 +28,12 @@ export const getUserByEmail = async (req, res) => {
             res.send({ status: "error", error: 'Usuario no encontrado.' });
         } else {
             req.session.user = user;
-            console.log(user)
             res.send({ result: "success", payload: user });
         }
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el usuario.' });
     }
 }
-
 export const getUserById = async (req, res) => {
     try {
         const { uid } = req.params;
@@ -58,19 +58,46 @@ export const createUser = (req, res, next) => {
             return res.status(500).json({ error: 'Error en el registro' });
         }
         if (!user) {
-            return res.status(400).json({ error: 'El usuario ya existe' });
+            // return res.status(400).json({ error: 'El usuario ya existe' });
+            return res.redirect('/register')
         }
-        return res.json({ message: 'Usuario creado correctamente' });
+        // return res.json({ message: 'Usuario creado correctamente' });
+        return res.redirect('/')
+    })(req, res, next);
+}
+export const logUser = (req, res, next) => {
+    passport.authenticate('login', (err, user, info) => {
+        req.session.user = {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            age: user.age,
+            email: user.email,
+            cart: user.cart
+        };
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error en el loguear' });
+        }
+        if (!user) {
+            return res.redirect('/register');
+
+        }
+        if (user.email === admin) {
+            req.session.admin = true;
+            return res.redirect('/admin');
+        } else {
+            req.session.admin = false;
+            res.redirect('/products');
+        }
     })(req, res, next);
 }
 export const updateUser = async (req, res) => {
-    const userId = req.params.uid;
     const updates = req.body; // Contiene los campos a actualizar
-    if (!userId || !updates || Object.keys(updates).length === 0) {
+        if (!updates || Object.keys(updates).length === 0) {
         return res.status(400).send({ status: "error", error: "Faltan datos válidos para actualizar" });
     }
     try {
-        const user = await usersService.getUserById(userId);
+        const user = await usersService.getUserByEmail(updates.email);
         if (!user) {
             return res.status(404).send({ status: "error", error: "Usuario no encontrado" });
         }
@@ -79,11 +106,11 @@ export const updateUser = async (req, res) => {
             updates.password = createHash(updates.password);
         }
         // Actualiza los campos recibidos en el body
-        const updatedUser = await usersService.updateUser(userId, updates);
+        const updatedUser = await usersService.updateUser(user._id, updates);
         if (!updatedUser) {
             return res.status(500).send({ status: "error", error: "Error al actualizar el usuario" });
         }
-        res.json({ status: 'Usuario actualizado correctamente' });
+        res.redirect('/'); // Redirecciona de nuevo a la página de inicio de sesión
     } catch (error) {
         console.error(error);
         return res.status(500).send({ status: "error", error: "Error al actualizar el usuario" });

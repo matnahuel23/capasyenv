@@ -44,34 +44,39 @@ export const updateCart = async (req, res) => {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = parseInt(req.body.quantity);
-
         if (quantity <= 0) {
             return res.send({ status: "error", error: 'Debe ingresar al menos una unidad del producto.' });
         }
-        const cartAdd = await cartsService.getCartById({ _id: cid });
+        const cartAdd = await cartsService.getCartById(cid);
         if (!cartAdd) {
             return res.send({ status: "error", error: 'Carrito no encontrado' });
         }
-        const product = await productsService.getProductById({ _id: pid });
+        const product = await productsService.getProductById(pid);
         if (!product) {
             return res.send({ status: "error", error: 'Producto no encontrado' });
         }
         if (product.stock < quantity) {
             return res.send({ status: "error", error: 'No disponemos de ese stock' });
         }
-        const existingProductIndex = cartAdd.products.findIndex(item => item.product.toString() === pid);
+        // Verifica si el producto ya está en el carrito
+        const existingProductIndex = await cartsService.indexProductInCart(cid, pid);
         if (existingProductIndex !== -1) {
-            cartAdd.products[existingProductIndex].quantity += quantity;
+            const existingProduct = cartAdd.products[existingProductIndex];
+            if (existingProduct) {
+                existingProduct.quantity += quantity;
+            }
         } else {
             cartAdd.products.push({ product: pid, quantity });
         }
         cartAdd.markModified('products');
-        await cartsService.updateCart({ _id: cid }, cartAdd);
-        await productsService.updateProduct({ _id: pid }, { $inc: { stock: -quantity } });
+        await cartsService.updateCart(cid, cartAdd);
+        await productsService.updateProductStock(pid, quantity);
         // Actualiza el total del carrito
-        await cartsService.updateCart({ _id: cid }, { $inc: { total: product.price * quantity } });
+        const newTotal = cartAdd.total + (product.price * quantity);
+        const totalUpdateResult = await cartsService.updateCartTotal(cid, newTotal);
         return res.json({ message: 'Producto agregado al carrito correctamente.' });
     } catch (error) {
+        console.error('Error al agregar el producto:', error);
         return res.status(500).json({ message: 'Error al agregar el producto.' });
     }
 }

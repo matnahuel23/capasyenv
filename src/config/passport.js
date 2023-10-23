@@ -19,7 +19,6 @@ const initializePassport = () => {
     configureGitHubStrategy();
     configureSerialization();
 };
-
 const configureLocalStrategy = () => {
 // Configuración de la estrategia local de registro
     passport.use('register', new localStrategy(
@@ -88,8 +87,7 @@ const configureGitHubStrategy = () => {
         callbackURL: callbackURL
     }, async(accessToken, refreshToken, profile, done) => {
         try{
-            // console.log(profile) //chequeo info que viene del perfil
-            let user = await usersService.getUserByEmail({email:profile._json.email})
+            let user = await usersService.getUserByEmail(profile._json.email)
             if(!user){ // Si el usuario no existe en nuestra BD, lo agrego
                 // Crear el carrito primero
                 const newCart = await cartsService.createCart({
@@ -114,7 +112,6 @@ const configureGitHubStrategy = () => {
         }
     }))
 }
-
 const configureSerialization = () => { 
     // Serialización del usuario
     passport.serializeUser((user, done) => {

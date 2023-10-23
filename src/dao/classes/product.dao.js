@@ -41,6 +41,16 @@ export default class Product {
         }
     }
 
+    updateProductStock = async (pid, quantity) => {
+        try {
+            let result = await productModel.updateOne({ _id: pid }, { $inc: { stock: -quantity } })
+            return result
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
     deleteProduct = async (pid) => {
         try {
             let result = await productModel.deleteOne({ _id: pid })
@@ -50,4 +60,21 @@ export default class Product {
             return null
         }
     }
+
+    paginate = async (conditions, options) => {
+        try {
+            const { page, limit, sort } = options;
+
+            const result = await productModel.paginate(conditions, {
+                page,
+                limit,
+                sort,
+            });
+            return result;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
 }

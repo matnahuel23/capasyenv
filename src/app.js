@@ -14,10 +14,10 @@ import session from "express-session";
 import handlebars from "express-handlebars";
 import { fileURLToPath } from 'url';
 import path from "path";
+const app = express();
 
 // ENV
 const PORT = config.port;
-const app = express();
 const cookiePass = config.cookiePass;
 const adminPass = config.adminPass;
 const mongoURL = config.mongoUrl;

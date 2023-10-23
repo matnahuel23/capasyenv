@@ -7,7 +7,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     const formData = new FormData(form);
 
     try {
-        const response = await fetch('/api/products', {
+        const response = await fetch('/products', {
             method: 'POST',
             body: formData
         });
@@ -56,7 +56,7 @@ async function updateProduct(product) {
 
     // Realizar una solicitud PUT al servidor
     try {
-        const response = await fetch(`/api/products/${pid}`, {
+        const response = await fetch(`/products/${pid}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -92,7 +92,7 @@ async function deleteProduct(_id){
     const deleteId = _id; // Obtener el ID del producto
     
     try {
-        const response = await fetch(`/api/products/${deleteId}`, {
+        const response = await fetch(`/products/${deleteId}`, {
             method: "DELETE",
         });
 
@@ -124,7 +124,7 @@ document.getElementById("find-form-title").addEventListener("submit", async (e) 
     const resultContainer = document.getElementById("search-result")
 
     try {
-        const response = await fetch(`/api/products/search:title?title=${findTitle}`, {
+        const response = await fetch(`/products/search:title?title=${findTitle}`, {
             method: "GET",
         })
         if (response.ok) {

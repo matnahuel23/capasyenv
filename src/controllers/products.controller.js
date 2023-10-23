@@ -44,8 +44,8 @@ export const getProductById = async (req, res) => {
 }
 export const getProductByTitle = async (req, res) => {
     try {
-        let {pid} = req.params;
-        let product = await productsService.getProductByTitle(pid)
+        let { title } = req.query
+        let product = await productsService.getProductByTitle(title)
         if (!product) {
              res.send({status:"error", error: 'Producto no encontrado.' });
         }

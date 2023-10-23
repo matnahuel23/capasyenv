@@ -21,6 +21,16 @@ export default class Product {
         }
     }
 
+    getProductByTitle = async (title) => {
+        try {
+            let result = await productModel.findOne({ title })
+            return result
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
     createProduct = async (product) => {
         try {
             let result = await productModel.create(product)

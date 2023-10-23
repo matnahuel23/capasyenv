@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { getProducts } from '../controllers/products.controller.js'
+import { getProducts} from '../controllers/products.controller.js'
 import { createUser, logUser, updateUser } from '../controllers/users.controller.js'
 import path from "path"
 import { fileURLToPath } from 'url';

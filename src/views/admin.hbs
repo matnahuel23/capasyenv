@@ -13,7 +13,7 @@
     <h1>CRUD Productos</h1>
     <div id="product-form">
         <h2>Agregar Producto</h2>
-        <form id="form" action="/api/products" method="post">
+        <form id="form" action="/products" method="post">
             <label for="title">Nombre del Producto</label>
             <input type="text" name="title" id="title" required>
             <label for="description">Descripción</label>
@@ -45,7 +45,6 @@
                 </div>
         </div>
     <div class="fixed-bottom m-3">
-        <a href="/chat" class="btn btn-success">Chat</a>
         <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     </div>
     <script src="/socket.io/socket.io.js"></script>

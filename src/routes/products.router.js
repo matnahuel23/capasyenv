@@ -5,7 +5,7 @@ const router = Router()
 
 router.get("/", getProducts)
 router.get("/:pid", getProductById)
-router.get("/search/:title", getProductByTitle)
+router.get("/search:title", getProductByTitle);
 router.post("/", createProducts)
 router.put("/:pid", updateProduct)
 router.delete("/:pid", deleteProduct)

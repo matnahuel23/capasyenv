@@ -124,9 +124,9 @@ document.getElementById("find-form-title").addEventListener("submit", async (e) 
     const resultContainer = document.getElementById("search-result")
 
     try {
-        const response = await fetch(`/products/search:title?title=${findTitle}`, {
+        const response = await fetch(`/products/title/${findTitle}`, {
             method: "GET",
-        })
+        });
         if (response.ok) {
             const data = await response.json()
 

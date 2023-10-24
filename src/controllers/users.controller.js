@@ -1,7 +1,7 @@
 const UserDAO = require ("../dao/classes/user.dao.js")
 const CartDAO = require ("../dao/classes/cart.dao.js")
 const passport = require ("passport")
-const { createHash } = require ("../utils/bcrypt.js")
+const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const config = require ("../config/config.js")
 
 const admin = config.adminName
@@ -69,6 +69,8 @@ createUser : (req, res, next) => {
 },
 logUser : (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
+        // Guarda el ID de la sesión en una cookie personalizada
+        res.cookie('sessionID', req.sessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
         req.session.user = {
             first_name: user.first_name,
             last_name: user.last_name,
@@ -78,11 +80,10 @@ logUser : (req, res, next) => {
         };
         if (err) {
             console.error(err);
-            return res.status(500).json({ error: 'Error en el loguear' });
+            return res.status(500).json({ error: 'Error en el logueo' });
         }
         if (!user) {
             return res.redirect('/register');
-
         }
         if (user.email === admin) {
             req.session.admin = true;

@@ -40,7 +40,7 @@ getProductById = async (req, res) => {
 }
 getProductByTitle = async (req, res) => {
     try {
-        let { title } = req.query
+        let { title } = req.params
         let product = await productsService.getProductByTitle(title)
         if (!product) {
              res.send({status:"error", error: 'Producto no encontrado.' });

@@ -12,17 +12,10 @@ const Contenedor = require('./dao/managerFS/fileSystem.js');
 const passport = require('passport')
 const config = require ('./config/config.js')
 const cors = require ('cors')
-const productsRouter = require ('./routes/products.router.js')
-const cartsRouter = require ('./routes/carts.router.js')
-const usersRouter = require ('./routes/users.router.js')
-const viewsRouter = require ('./routes/views.router.js')
-const cookieRouter = require ('./routes/cookie.router.js')
-const chatsRouter = require ('./routes/chat.router.js')
 const cartsJsonPath = path.join(__dirname, 'data', 'carts.json');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-
 const initializePassport = require('./config/passport.js')
 
 // ENV
@@ -34,23 +27,11 @@ const mongoURL = config.mongoUrl;
 // Cookie
 app.use(cookieParser(cookiePass))
 
-// Configurar el motor de plantillas y las rutas de vistas en la aplicación principal
-app.engine("handlebars", handlebars.engine())
-app.set('views', path.join(__dirname, 'views'));
-app.set("view engine", "handlebars");
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Conectarse a Mongoose
-mongoose.connect(mongoURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-
 // Session
 app.use(session({
     store: MongoStore.create({
         mongoUrl: mongoURL,
+        mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
         ttl: 6000,
     }),
     secret: adminPass,
@@ -60,20 +41,37 @@ app.use(session({
     saveUninitialized: true,
 }));
 initializePassport();
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Conectarse a Mongoose
+mongoose.connect(mongoURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
+// Rutas
+const productsRouter = require ('./routes/products.router.js')
+const cartsRouter = require ('./routes/carts.router.js')
+const usersRouter = require ('./routes/users.router.js')
+const viewsRouter = require ('./routes/views.router.js')
+const cookieRouter = require ('./routes/cookie.router.js')
+const chatsRouter = require ('./routes/chat.router.js')
+
+// Configurar el motor de plantillas y las rutas de vistas en la aplicación principal
+app.engine("handlebars", handlebars.engine())
+app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "handlebars");
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: 'http://localhost:5500', methods: ["GET", "POST", "PUT", "DELETE"] }))
 
-// Cookie
-app.use(cookieParser(cookiePass));
-
-const users = {}
-
 // Socket.io
+const users = {}
 io.on("connection", (socket) => {
     // Conexión y Desconexión de usuarios
     socket.on("newUser", (username) => {

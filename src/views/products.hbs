@@ -46,14 +46,14 @@
             {{#each products.docs}}
             <div class="col-md-4">
                 <div class="card mb-4">
-                    <img src="{{this.thumbnails.[0]}}" class="card-img-top" alt="{{this.title}}" style="width: 250px; height: 250px;">
+                    <img src="/{{this.thumbnails.[0]}}" class="card-img-top" alt="{{this.title}}" style="width: 250px; height: 250px;">
                     <div class="card-body">
                         <h5 class="card-title">{{this.title}}</h5>
                         <p class="card-text">Precio: ${{this.price}}</p>
                         <p class="card-text">Stock: {{this.stock}}</p>
                          <!-- Botones para agregar/quitar del carrito -->
                         <div>
-                        <form id="addToCartForm-{{this._id}}" action="/carts/{{cart}}/product/{{this._id}}" method="PUT">
+                        <form id="addToCartForm-{{this._id}}" action="/cart/{{cart}}/product/{{this._id}}" method="PUT">
                             <input type="number" name="quantity" placeholder="Cantidad" min="1" value="1" max="{{this.stock}}">
                             <button class="btn btn-success" type="submit">Agregar</button>
                         </form>

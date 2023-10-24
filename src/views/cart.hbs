@@ -13,7 +13,7 @@
                 {{#each this.products}}
                     <div class="col-md-4">
                         <div class="card mb-4">
-                            <img src="/img/{{this.product.thumbnails.[0]}}" class="card-img-top" alt="{{this.product.title}}" style="width: 250px; height: 250px;">
+                            <img src="/{{this.product.thumbnails.[0]}}" class="card-img-top" alt="{{this.product.title}}" style="width: 250px; height: 250px;">
                             <div class="card-body">
                                 <h5 class="card-title">{{this.product.title}}</h5>
                                 <p class="card-text">Precio: ${{this.product.price}}</p>

@@ -1,13 +1,9 @@
-import Products from "../dao/classes/product.dao.js";
-import path from "path"
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const Products = require ("../dao/classes/product.dao.js")
+const path = require ("path")
 const productsService = new Products();
+const products = []
 
-export const getProducts = async (req, res) => {
+getProducts = async (req, res) => {
     try {
         const { sort, category, status, page, limit } = req.query;
         // Parsea el valor de sort a un número entero
@@ -36,13 +32,13 @@ export const getProducts = async (req, res) => {
         res.status(500).send({ status: "error", error: 'Error al mostrar productos. Detalles: ' + error.message });
     }
 }
-export const getProductById = async (req, res) => {
+getProductById = async (req, res) => {
     const { pid } = req.params
     let result = await productsService.getProductById(pid)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }
-export const getProductByTitle = async (req, res) => {
+getProductByTitle = async (req, res) => {
     try {
         let { title } = req.query
         let product = await productsService.getProductByTitle(title)
@@ -54,7 +50,7 @@ export const getProductByTitle = async (req, res) => {
         res.send({status:"error", error: 'Error al obtener el producto.' });
     }
 }
-export const createProducts = async (req, res) => {
+createProducts = async (req, res) => {
     try {
         let { title, description, code, price, stock, category } = req.body;
         if (!title || !description || !code || !price || !stock || !category) {
@@ -78,7 +74,7 @@ export const createProducts = async (req, res) => {
         res.status(500).send({ status: "error", error: 'Error al agregar el producto. Detalles: ' + error.message });
     }
 }
-export const updateProduct = async (req, res) => {
+updateProduct = async (req, res) => {
     try {
         let { pid } = req.params;
         const productToReplace = req.body;
@@ -103,7 +99,7 @@ export const updateProduct = async (req, res) => {
         res.send({ status: "error", error: 'Error al actualizar el producto.' });
     }
 }
-export const deleteProduct = async (req, res) => {
+deleteProduct = async (req, res) => {
     try {
         let {pid} = req.params;
         let result = await productsService.deleteProduct({_id: pid})
@@ -112,3 +108,12 @@ export const deleteProduct = async (req, res) => {
         res.send({ status: "error", error: 'Error al eliminar el producto.' });
     }
 }
+
+module.exports = {
+    getProducts,
+    getProductById,
+    getProductByTitle,
+    createProducts,
+    updateProduct,
+    deleteProduct,
+  };

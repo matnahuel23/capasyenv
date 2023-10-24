@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { getCarts, getCartById, createCart, updateCart, deleteCart, deleteProductOfCart } from "../controllers/carts.controller.js";
+const { Router } = require ("express")
+const { getCarts, getCartById, createCart, updateCart, deleteCart, deleteProductOfCart } = require ("../controllers/carts.controller.js")
 
 const router = Router()
 
@@ -10,4 +10,4 @@ router.put("/:cid/product/:pid", updateCart)
 router.delete("/:cid", deleteCart)
 router.delete("/:cid/product/:pid", deleteProductOfCart)
 
-export default router
+module.exports = { router }

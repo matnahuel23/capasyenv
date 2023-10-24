@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import paginate from "mongoose-paginate-v2";
+const mongoose = require ("mongoose")
+const paginate = require ("mongoose-paginate-v2")
 
 const cartProductSchema = new mongoose.Schema({
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'productos' },
@@ -15,4 +15,4 @@ cartSchema.plugin(paginate);
 
 const cartModel = mongoose.model('Carrito', cartSchema);
 
-export default cartModel
+module.exports = cartModel

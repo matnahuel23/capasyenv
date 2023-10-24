@@ -1,14 +1,16 @@
-import UserDAO from "../dao/classes/user.dao.js";
-import CartDAO from "../dao/classes/cart.dao.js";
-import passport from "passport";
-import { createHash } from "../utils/bcrypt.js";
-import config from "../config/config.js"
+const UserDAO = require ("../dao/classes/user.dao.js")
+const CartDAO = require ("../dao/classes/cart.dao.js")
+const passport = require ("passport")
+const { createHash } = require ("../utils/bcrypt.js")
+const config = require ("../config/config.js")
 
 const admin = config.adminName
 const usersService = new UserDAO();
 const cartsService = new CartDAO();
 
-export const getUsers = async (req, res) => {
+module.exports = {
+
+getUsers : async (req, res) => {
     try {
         const users = await usersService.getUsers();
         if (users && users.length > 0) {
@@ -19,8 +21,8 @@ export const getUsers = async (req, res) => {
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener los usuarios.' });
     }
-}
-export const getUserByEmail = async (req, res) => {
+},
+getUserByEmail : async (req, res) => {
     try {
         const { email } = req.body.email
         const user = await usersService.getUserByEmail(email);
@@ -33,8 +35,8 @@ export const getUserByEmail = async (req, res) => {
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el usuario.' });
     }
-}
-export const getUserById = async (req, res) => {
+},
+getUserById : async (req, res) => {
     try {
         const { uid } = req.params;
         const user = await usersService.getUserById(uid);
@@ -46,12 +48,12 @@ export const getUserById = async (req, res) => {
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el usuario.' });
     }
-}
-export const login = passport.authenticate('login', {
+},
+login : passport.authenticate('login', {
     successRedirect: '/successlogin',
     failureRedirect: '/faillogin',
-});
-export const createUser = (req, res, next) => {
+}),
+createUser : (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
         if (err) {
             console.error(err);
@@ -64,8 +66,8 @@ export const createUser = (req, res, next) => {
         // return res.json({ message: 'Usuario creado correctamente' });
         return res.redirect('/')
     })(req, res, next);
-}
-export const logUser = (req, res, next) => {
+},
+logUser : (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
         req.session.user = {
             first_name: user.first_name,
@@ -90,8 +92,8 @@ export const logUser = (req, res, next) => {
             res.redirect('/products');
         }
     })(req, res, next);
-}
-export const updateUser = async (req, res) => {
+},
+updateUser : async (req, res) => {
     const updates = req.body; // Contiene los campos a actualizar
         if (!updates || Object.keys(updates).length === 0) {
         return res.status(400).send({ status: "error", error: "Faltan datos válidos para actualizar" });
@@ -115,8 +117,8 @@ export const updateUser = async (req, res) => {
         console.error(error);
         return res.status(500).send({ status: "error", error: "Error al actualizar el usuario" });
     }
-}
-export const deleteUser = async (req, res) => {
+},
+deleteUser : async (req, res) => {
     try {
         const userId = req.params.uid;
         if (!userId) {
@@ -149,4 +151,6 @@ export const deleteUser = async (req, res) => {
         console.error(error);
         return res.status(500).json({ status: 'Error', error: 'Error al eliminar el usuario y el carrito' });
     }
-};
+},
+}
+   

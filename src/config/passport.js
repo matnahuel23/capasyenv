@@ -1,10 +1,10 @@
-import passport from "passport"
-import local from "passport-local"
-import User from "../dao/classes/user.dao.js"
-import Cart from "../dao/classes/cart.dao.js"
-import { createHash, isValidatePassword } from "../utils/bcrypt.js";
-import GitHubStrategy from "passport-github2"
-import config from "./config.js"
+const passport = require ("passport")
+const local = require ("passport-local")
+const User = require ("../dao/classes/user.dao.js")
+const Cart = require ("../dao/classes/cart.dao.js")
+const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
+const GitHubStrategy = require ("passport-github2")
+const config = require ("./config.js")
 
 const localStrategy = local.Strategy;
 const admin = config.adminName
@@ -124,4 +124,4 @@ const configureSerialization = () => {
     })
 }
 
-export default initializePassport
+module.exports = initializePassport

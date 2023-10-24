@@ -1,13 +1,9 @@
-import express from "express";
-import passport from "passport";
-import { getProducts} from '../controllers/products.controller.js'
-import { createUser, logUser, updateUser } from '../controllers/users.controller.js'
-import path from "path"
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const express = require ("express")
+const passport = require ("passport")
+const { getProducts} = require ('../controllers/products.controller.js')
+const { createUser, logUser, updateUser } = require ('../controllers/users.controller.js')
+const path = require ("path")
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const router = express.Router();
 
 // Rutas
@@ -85,4 +81,4 @@ router.get('/githubcallback', passport.authenticate('github',{failureRedirect:'l
     res.redirect('/products');
 })
 
-export default router;
+module.exports = router

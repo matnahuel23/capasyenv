@@ -2,7 +2,6 @@
   "name": "3erapreentregaback",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon src/app.js"
@@ -30,6 +29,7 @@
     "passport-local": "^1.0.0",
     "session-file-store": "^1.5.0",
     "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "sweetalert2": "^11.7.32"
   }
 }

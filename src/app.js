@@ -1,20 +1,29 @@
-import express from "express";
-import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import productsRouter from './routes/products.router.js';
-import cartsRouter from './routes/carts.router.js';
-import usersRouter from './routes/users.router.js';
-import viewsRouter from './routes/views.router.js'
-import config from "./config/config.js"
-import initializePassport from "./config/passport.js";
-import passport from "passport";
-import session from "express-session";
-import handlebars from "express-handlebars";
-import { fileURLToPath } from 'url';
-import path from "path";
+const express = require('express');
+const cookieParser = require('cookie-parser')
+const mongoose = require('mongoose')
+const MongoStore = require('connect-mongo');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const http = require('http');
+const path = require('path');
+const { Server } = require('socket.io');
+const handlebars = require('express-handlebars');
+const Contenedor = require('./dao/managerFS/fileSystem.js');
+const passport = require('passport')
+const config = require ('./config/config.js')
+const cors = require ('cors')
+const productsRouter = require ('./routes/products.router.js')
+const cartsRouter = require ('./routes/carts.router.js')
+const usersRouter = require ('./routes/users.router.js')
+const viewsRouter = require ('./routes/views.router.js')
+const cookieRouter = require ('./routes/cookie.router.js')
+const chatsRouter = require ('./routes/chat.router.js')
+const cartsJsonPath = path.join(__dirname, 'data', 'carts.json');
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+const initializePassport = require('./config/passport.js')
 
 // ENV
 const PORT = config.port;
@@ -22,21 +31,21 @@ const cookiePass = config.cookiePass;
 const adminPass = config.adminPass;
 const mongoURL = config.mongoUrl;
 
+// Cookie
+app.use(cookieParser(cookiePass))
+
 // Configurar el motor de plantillas y las rutas de vistas en la aplicación principal
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const hbs = handlebars.create({});
-app.engine('handlebars', hbs.engine);
+app.engine("handlebars", handlebars.engine())
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'handlebars');
+app.set("view engine", "handlebars");
 app.use(express.static(path.join(__dirname, 'public')));
-// Listen
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Conectarse a Mongoose
-const connection = mongoose.connect(mongoURL);
+mongoose.connect(mongoURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
 // Session
 app.use(session({
@@ -62,8 +71,82 @@ app.use(cors({ origin: 'http://localhost:5500', methods: ["GET", "POST", "PUT", 
 // Cookie
 app.use(cookieParser(cookiePass));
 
+const users = {}
+
+// Socket.io
+io.on("connection", (socket) => {
+    // Conexión y Desconexión de usuarios
+    socket.on("newUser", (username) => {
+        users[socket.id] = username;
+        console.log(`Un usuario se ha conectado`);
+        io.emit("userConnected", username)
+    })
+    socket.on("disconnect", () => {
+        const username = users[socket.id];
+        console.log(`Un usuario ${username} se ha desconectado`);
+        delete users[socket.id];
+        io.emit("userDisconnected", username)
+    })
+
+    // Agregar y Borrar Productos
+    socket.on('addProduct', async (product) => {
+        try {
+            // Emitir el evento a todos los clientes conectados
+            io.emit("productAdded", product);
+            } catch (error) {
+                console.error('Error al agregar el producto:', error);
+            }
+    });
+    
+    socket.on('deleteProduct', async (deletedProductId) => {
+        try {
+            // Emitir el evento a todos los clientes conectados
+            io.emit('productDeleted', deletedProductId);
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+        }
+    });
+
+    // Agregar y borrar Carrito 
+    socket.on('addCart', async (cart) => {
+        try {
+                const contenedor = new Contenedor(cartsJsonPath);    
+                const newCartId = await contenedor.save(cart);
+                const newCart = { id: newCartId, ...cart };
+                io.emit('cartAdded', newCart);
+            } catch (error) {
+                console.error('Error al agregar el carrito:', error);
+            }
+    });
+    
+    socket.on("deleteCart", async (cartId) => {
+        try {
+            const contenedor = new Contenedor(cartsJsonPath);
+            await contenedor.deleteById(cartId);
+            io.emit('cartDeleted', cartId);
+        } catch (error) {
+            console.error('Error al eliminar el carrito:', error);
+        }
+    });
+
+    // Chat
+    socket.on("chatMessage", (message) => {
+        console.log("Mensaje ingresado");
+        const username = users[socket.id];
+        io.emit("message", { username, message })
+    })
+
+})
+
 // Routers
-app.use('/products', productsRouter);
-app.use("/carts", cartsRouter);
-app.use("/users", usersRouter);
+app.use('/products', productsRouter.router);
+app.use('/carts', cartsRouter.router);
+app.use('/users', usersRouter.router);
 app.use('/', viewsRouter);
+app.use('/', cookieRouter.router)
+app.use('/', chatsRouter.router)
+
+// Listen
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

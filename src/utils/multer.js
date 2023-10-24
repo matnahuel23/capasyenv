@@ -1,4 +1,4 @@
-import multer from multer
+const multer = require ('multer')
 
 //Antes de instanciar multer, debemos configurar dónde se almacenarán los archivos.
 const storage = multer.diskStorage({
@@ -11,4 +11,4 @@ const storage = multer.diskStorage({
     }
 });
 
-export default multer({storage: storage })
+module.exports = multer({storage: storage })

@@ -1,6 +1,6 @@
-import userModel from "../models/user.model.js";
+const userModel = require ("../models/user.model.js")
 
-export default class User {
+module.exports =  class User {
     getUsers = async () => {
         try {
             let users = await userModel.find()

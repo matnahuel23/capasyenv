@@ -54,12 +54,12 @@ document.querySelectorAll('form[id^="addToCartForm-"]').forEach(function (form) 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
         const formId = this.id; // Obtén el ID completo del formulario
-        const productIdFromFormId = formId.replace("addToCartForm-", "");
+        const productId=FormId = formId.replace("addToCartForm-", "");
         const quantityInput = this.querySelector('input[name="quantity"]');
         const quantity = parseInt(quantityInput.value);
 
         console.log("Form ID:", formId);
-        console.log("Product ID from Form ID:", productIdFromFormId);
+        console.log("Product ID = Form ID:", productId=FormId);
         console.log("Quantity:", quantity);
 
         if (isNaN(quantity) || quantity <= 0) {
@@ -73,7 +73,7 @@ document.querySelectorAll('form[id^="addToCartForm-"]').forEach(function (form) 
         }
 
         try {
-            const response = await fetch(`/carts/${cart}/product/${productIdFromFormId}`, {
+            const response = await fetch(`/carts/${cart}/product/${productId=FormId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ document.querySelectorAll('form[id^="deleteToCartForm-"]').forEach(function (for
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
         const formId = this.id; // Obtén el ID completo del formulario
-        const productIdFromFormId = formId.replace("deleteToCartForm-", "");
+        const productId=FormId = formId.replace("deleteToCartForm-", "");
         const quantityInput = this.querySelector('input[name="quantity"]');
         const quantity = parseInt(quantityInput.value);
 
@@ -131,7 +131,7 @@ document.querySelectorAll('form[id^="deleteToCartForm-"]').forEach(function (for
         }
 
         try {
-            const response = await fetch(`/carts/${cart}/product/${productIdFromFormId}`, {
+            const response = await fetch(`/carts/${cart}/product/${productId=FormId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

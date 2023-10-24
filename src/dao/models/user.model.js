@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import paginate from "mongoose-paginate-v2";
+const mongoose = require ("mongoose");
+const paginate = require ("mongoose-paginate-v2")
 
 const userSchema = new mongoose.Schema({
     first_name:{type: String},
@@ -15,4 +15,4 @@ userSchema.plugin(paginate);
 
 const userModel = mongoose.model('Usuario', userSchema);
 
-export default userModel
+module.exports = userModel

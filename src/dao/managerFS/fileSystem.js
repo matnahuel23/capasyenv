@@ -1,6 +1,5 @@
-import fs from "fs"
-import path from "path"
-
+const fs = require('fs');
+const path = require('path');
 function generateUniqueId() {
     return Date.now().toString();
 }
@@ -93,4 +92,4 @@ class Contenedor {
     }
 }
 
-export default Contenedor
+module.exports = Contenedor;

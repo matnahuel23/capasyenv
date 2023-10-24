@@ -1,6 +1,6 @@
-import productModel from '../models/product.model.js'
+const productModel = require ('../models/product.model.js')
 
-export default class Product {
+module.exports =  class Product {
     getProducts = async () => {
         try {
             let result = await productModel.find()
@@ -76,5 +76,4 @@ export default class Product {
             return null;
         }
     }
-
 }

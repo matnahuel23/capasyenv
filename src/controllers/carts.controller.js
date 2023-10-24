@@ -1,10 +1,10 @@
-import Cart from "../dao/classes/cart.dao.js"
-import Product from "../dao/classes/product.dao.js"
+const Cart = require ("../dao/classes/cart.dao.js")
+const Product = require ("../dao/classes/product.dao.js")
 
 const cartsService = new Cart()
 const productsService = new Product()
 
-export const getCarts = async (req, res) => {
+getCarts = async (req, res) => {
     try {
         let carts = await cartsService.getCarts()
         res.send({result:"success", payload:carts})
@@ -12,7 +12,7 @@ export const getCarts = async (req, res) => {
         res.send({status:"error", error: 'Error al obtener los carritos.' });
     }
 }
-export const getCartById = async (req, res) => {
+getCartById = async (req, res) => {
     try {
         let { cid } = req.params;
         let cart = await cartsService.getCartById(cid)
@@ -25,7 +25,7 @@ export const getCartById = async (req, res) => {
         res.send({ status: "error", error: 'Error al obtener el carrito.' });
     }
 }
-export const createCart = async (req, res) => {
+createCart = async (req, res) => {
     try {
         const newCart = {
             products : [],
@@ -39,7 +39,7 @@ export const createCart = async (req, res) => {
         res.status(500).send({ status: "error", error: 'Error al agregar el carrito.' });
     }
 }
-export const updateCart = async (req, res) => {
+updateCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const pid = req.params.pid;
@@ -82,7 +82,7 @@ export const updateCart = async (req, res) => {
         return res.status(500).json({ message: 'Error al agregar el producto.' });
     }
 }
-export const deleteCart = async (req, res) => {
+deleteCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const cartToRemove = await cartsService.getCartById({ _id: cid });
@@ -108,7 +108,7 @@ export const deleteCart = async (req, res) => {
         return res.status(500).json({ message: 'Error al eliminar el carrito.' });
     }
 }
-export const deleteProductOfCart = async (req, res) => {
+deleteProductOfCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const pid = req.params.pid;
@@ -150,3 +150,12 @@ export const deleteProductOfCart = async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el producto del carrito.' });
     }
 }
+
+module.exports = {
+    getCarts,
+    getCartById,
+    createCart,
+    updateCart,
+    deleteCart,
+    deleteProductOfCart,
+  };

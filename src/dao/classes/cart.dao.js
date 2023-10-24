@@ -1,6 +1,6 @@
-import cartModel from '../models/cart.model.js'
+const cartModel = require ('../models/cart.model.js')
 
-export default class Cart {
+module.exports =  class Cart {
     getCarts = async () => {
         try {
             let result = await cartModel.find()

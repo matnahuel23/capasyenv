@@ -20,7 +20,7 @@
                                 <p class="card-text">Cantidad: {{this.quantity}}</p>
                                 <!-- Botones para agregar/quitar del carrito -->
                                 <div>
-                                    <form id="deleteToCartForm-{{this.product._id}}" action="/cart/{{../_id}}/product/{{this.product._id}}" method="DELETE">
+                                    <form id="deleteToCartForm-{{this.product._id}}" action="/carts/{{../_id}}/product/{{this.product._id}}" method="DELETE" data-cart-id="{{../_id}}">
                                         <input type="number" name="quantity" placeholder="Cantidad" min="1" value="1" max="{{this.quantity}}">
                                         <button class="btn btn-warning" type="submit">Eliminar</button>
                                     </form>

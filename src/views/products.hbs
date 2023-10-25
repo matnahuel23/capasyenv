@@ -50,6 +50,7 @@
             <button class="btn btn-primary" onclick="applyFilters()">Aplicar Filtros</button>
             <a href="/logout"><button class="btn btn-danger float-right">Desloguearse</button></a>
         </div>
+        <!-- Productos -->
         <div class="row">
             {{#each products.docs}}
             <div class="col-md-4">
@@ -71,7 +72,6 @@
             </div>
             {{/each}}
         </div>
-
         <!-- Información de Paginación -->
         <div>
             <p>Página {{products.page}} de {{products.totalPages}}</p>

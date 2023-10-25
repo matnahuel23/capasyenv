@@ -116,7 +116,7 @@ document.querySelectorAll('form[id^="deleteToCartForm-"]').forEach(function (for
         const quantityInput = this.querySelector('input[name="quantity"]');
         const quantity = parseInt(quantityInput.value);
         const cart = this.getAttribute('data-cart-id'); // Obtén el valor de data-cart-id
-        console.log({cart})
+
         if (isNaN(quantity) || quantity <= 0) {
             Swal.fire({
                 icon: 'error',
@@ -128,7 +128,7 @@ document.querySelectorAll('form[id^="deleteToCartForm-"]').forEach(function (for
         }
 
         try {
-            console.log({cart})
+
             const response = await fetch(`/carts/${cart}/product/${productIdFromFormId}`, {
                 method: 'DELETE',
                 headers: {

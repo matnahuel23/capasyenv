@@ -1,13 +1,15 @@
-/*  id: que es el _id de mongo
-    code: string autogenerarse y ser unico
-    puchase_datetime: tiene que guardar fecha y hora de la compra (un created_at)
-    amount: number, total de la compra
-    purchaser: string, el correo del usuario
+const mongoose = require('mongoose')
+const paginate = require ("mongoose-paginate-v2")
 
-    hacer ruta/modelo/controlador de ticket
+const ticketSchema = new mongoose.Schema({
+  code: { type: String, unique: true, required: true },
+  purchase_datetime: { type: Date, default: Date.now },
+  amount: { type: Number, required: true },
+  purchaser: { type: String, ref: 'User' } // Se refiere al modelo User
+},{ versionKey: false })
 
-    crear ruta en cart /:id/purchase para dar el finalizar compra 
-    boton eliminar carrito y que vuelva todo
+ticketSchema.plugin(paginate)
 
-    ver clase 28 y 30
-*/
+const Ticket = mongoose.model('Ticket', ticketSchema)
+
+module.exports = Ticket

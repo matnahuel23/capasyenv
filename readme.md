@@ -1,11 +1,5 @@
-![capas](src/public/prints/capas.png)
+hacer ruta/controlador de ticket
 
-![model](src/public/prints/config-passport.png)
+crear ruta en cart /:id/purchase para dar el finalizar compra 
 
-![controller](src/public/prints/controladora.png)
-
-![dao-clases](src/public/prints/dao-clases.png)
-
-![confi-passport](src/public/prints/model.png)
-
-![rutas](src/public/prints/rutas.png)
+ver clase 28 y 30 mail carrito y sms con graciasent en sms

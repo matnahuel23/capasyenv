@@ -69,7 +69,7 @@ document.querySelectorAll('form[id^="addToCartForm-"]').forEach(function (form) 
         }
 
         try {
-            const response = await fetch(`/${cart}/product/${productIdFromFormId}`, {
+            const response = await fetch(`/carts/${cart}/product/${productIdFromFormId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ document.querySelectorAll('form[id^="deleteToCartForm-"]').forEach(function (for
         }
 
         try {
-            const response = await fetch(`/${cart}/product/${productIdFromFormId}`, {
+            const response = await fetch(`/carts/${cart}/product/${productIdFromFormId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

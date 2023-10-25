@@ -6,8 +6,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-5 mb-4">Productos en Stock</h1>
+     <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h1 class="mt-5 mb-4">Productos en Stock</h1>
+            </div>
+            <div class="col-md-3 d-flex justify-content-end align-items-center">
+                <a href="/carts/{{cart}}" class="btn">
+                    <img src="/img/carrito.png" alt="Cart">
+                </a>
+            </div>
+        </div>
         <!-- Filtros por Categoría -->
         <div class="mb-3">
             <label for="categoryFilter">Filtrar por Categoría:</label>

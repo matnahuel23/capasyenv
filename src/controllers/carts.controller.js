@@ -1,8 +1,11 @@
 const Cart = require ("../dao/classes/cart.dao.js")
 const Product = require ("../dao/classes/product.dao.js")
+const User = require ("../dao/classes/user.dao.js")
+const path = require ("path")
 
 const cartsService = new Cart()
 const productsService = new Product()
+const usersService = new User()
 
 getCarts = async (req, res) => {
     try {
@@ -19,7 +22,10 @@ getCartById = async (req, res) => {
         if (!cart) {
             res.send({ status: "error", error: 'Carrito no encontrado.' });
         } else {
-            res.send({ result: "success", payload: cart });
+            const viewPath = path.join(__dirname, '../views/cart.hbs');
+            const { first_name, email, age } = req.session.user;            
+            // Renderiza la vista HBS y pasa los datos
+            res.render(viewPath, { cart, first_name, email, age });
         }
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el carrito.' });

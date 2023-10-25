@@ -5,13 +5,11 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
-
     try {
         const response = await fetch('/products', {
             method: 'POST',
             body: formData
         });
-
         if (response.ok) {
             const responseBody = await response.json();  // Parse the JSON response
             if (responseBody.result === "success"){
@@ -103,7 +101,6 @@ async function deleteProduct(_id){
                 title: "Producto eliminado",
                 text: `El producto con ID ${deleteId} ha sido eliminado exitosamente`,
             });
-            document.getElementById('delete-id').value = "";
         } else {
             Swal.fire({
                 icon: "error",

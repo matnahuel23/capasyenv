@@ -1,7 +1,6 @@
 const Products = require ("../dao/classes/product.dao.js")
 const path = require ("path")
 const productsService = new Products();
-const products = []
 
 getProducts = async (req, res) => {
     try {
@@ -43,7 +42,7 @@ getProductByTitle = async (req, res) => {
         let { title } = req.params
         let product = await productsService.getProductByTitle(title)
         if (!product) {
-             res.send({status:"error", error: 'Producto no encontrado.' });
+            return res.send({status:"error", error: 'Producto no encontrado.' });
         }
         res.send({result:"success", payload:product})
     } catch (error) {

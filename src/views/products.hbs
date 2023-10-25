@@ -40,7 +40,6 @@
         <div class="mb-3">
             <button class="btn btn-primary" onclick="applyFilters()">Aplicar Filtros</button>
             <a href="/logout"><button class="btn btn-danger float-right">Desloguearse</button></a>
-
         </div>
         <div class="row">
             {{#each products.docs}}
@@ -92,12 +91,15 @@
     </div>
     <div class="container text-right text-muted mt-2">
     <h6>Estás logueado como: {{first_name}}</h6>
+    <a href="/chat" class="btn btn-success">Chat</a>
+    <a href="/logout"><button class="btn btn-danger float-right">Desloguearse</button></a>
     </ul>
 </div>
     <script>
         const cart = "{{cart}}";
     </script>
     <script src="/scripts/productscript.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

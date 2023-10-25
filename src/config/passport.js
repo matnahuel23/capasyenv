@@ -77,7 +77,6 @@ const configureLocalStrategy = () => {
             return done(error);
         }
     }));
-    
 }
 const configureGitHubStrategy = () => { 
     // Configuración de la estrategia de registro con GitHub, previamente instale passport-github2

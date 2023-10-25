@@ -11,7 +11,6 @@
     <form id="username-form">
         <input type="text" class="form-control" id="username" value="{{first_name}}" readonly>
         <button type="submit" class="btn btn-success">Unirme al chat</button>
-        <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     </form>
     </div>
 
@@ -24,7 +23,7 @@
             <button type="submit">Enviar</button>
         </form>
     </div>
-
+    <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/chatscript.js"></script>
     <script>

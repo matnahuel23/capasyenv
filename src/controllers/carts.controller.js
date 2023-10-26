@@ -1,6 +1,7 @@
 const path = require ("path")
 const cartsService = require("../dao/factory/cart.factory.js")
 const productsService = require ("../dao/factory/product.factory.js")
+const CartDTO = require ('../dao/DTOs/cart.DTO.js')
 
 getCarts = async (req, res) => {
     try {
@@ -28,13 +29,8 @@ getCartById = async (req, res) => {
 }
 createCart = async (req, res) => {
     try {
-        const newCart = {
-            products : [],
-            total : 0,
-        }    
-        let result = await cartsService.createCart({
-            newCart
-        });
+        let newCart = new CartDTO({products, total})    
+        let result = await cartsService.createCart(newCart);
         res.send({ result: "success", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: 'Error al agregar el carrito.' });

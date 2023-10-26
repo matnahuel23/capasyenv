@@ -1,5 +1,6 @@
 const path = require ("path")
 const productsService = require ("../dao/factory/product.factory.js")
+const ProductDTO = require ('../dao/DTOs/product.DTO.js')
 
 getProducts = async (req, res) => {
     try {
@@ -50,23 +51,13 @@ getProductByTitle = async (req, res) => {
 }
 createProducts = async (req, res) => {
     try {
-        let { title, description, code, price, stock, category } = req.body;
+        let { title, description, code, price, stock, category, thumbnails } = req.body;
+        let product = new ProductDTO({title, description, code, price, stock, category, thumbnails})
         if (!title || !description || !code || !price || !stock || !category) {
             return res.status(400).send({ status: "error", error: 'Todos los campos obligatorios deben ser proporcionados.' });
         }
-        const thumbnailFilename = req.file ? req.file.filename : null;
-        const thumbnails = thumbnailFilename ? [thumbnailFilename] : [];
         // Agregar el producto en la base de datos
-        let result = await productsService.createProduct({
-            title,
-            description,
-            code,
-            price,
-            status: true,
-            stock,
-            category,
-            thumbnails
-        });
+        let result = await productsService.createProduct(product);
         res.send({ result: "success", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: 'Error al agregar el producto. Detalles: ' + error.message });

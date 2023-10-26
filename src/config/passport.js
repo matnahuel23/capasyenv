@@ -5,6 +5,8 @@ const Cart = require ("../dao/classes/cart.dao.js")
 const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const GitHubStrategy = require ("passport-github2")
 const config = require ("./config.js")
+const CartDTO = require ('../dao/DTOs/cart.DTO.js')
+const UserDTO = require ('../dao/DTOs/user.DTO.js')
 
 const localStrategy = local.Strategy;
 const admin = config.adminName
@@ -24,27 +26,25 @@ const configureLocalStrategy = () => {
     passport.use('register', new localStrategy(
         { passReqToCallback: true, usernameField: 'email'}, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body;
+            let products = [];
+            let total= 0;
             try {
                 let user = await usersService.getUserByEmail(username);
                 if (user) {
                     console.log("El usuario ya existe");
                     return done(null, false);
                 }
-                
                 // Crear el carrito primero
-                const newCart = await cartsService.createCart({
-                    products: [],
-                    total: 0
-                });
-
-                const newUser = {
+                let cart = new CartDTO({products, total})  
+                let newCart = await cartsService.createCart(cart);
+                let newUser = new UserDTO({
                     first_name,
                     last_name,
                     email,
                     age,
                     password: createHash(password),
                     cart: newCart._id
-                }
+                })
 
                 if (email === admin) {
                     newUser.role = "admin";

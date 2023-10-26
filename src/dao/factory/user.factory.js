@@ -1,24 +1,14 @@
-const mongoose = require("mongoose");
 const config = require('../../config/config.js');
-const mongoURL = config.mongoUrl;
-
-let Users; 
 
 switch (config.persistence) {
     case "MONGO":
-        mongoose.connect(mongoURL)
-            .then(() => {
-                const { default: UsersMongo } = require('../classes/user.dao.js');
-                Users = UsersMongo;
-            })
-            .catch(error => {
-                console.error("Error de conexión a MongoDB:", error);
-            });
-        break;
+        const UsersMongo = require ('../classes/user.dao.js')
+        Users = new UsersMongo ();
+        break
     case "MEMORY":
-        const { default: UsersMemory } = require('../memory/user.memory.js');
-        Users = UsersMemory;
+        const UsersMemory= require('../memory/user.memory.js');
+        Users = new UsersMemory;
         break;
 }
 
-module.exports = Users; 
+module.exports = Users;

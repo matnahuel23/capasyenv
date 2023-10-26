@@ -1,4 +1,5 @@
 ticket controller
+hacer reppositories
 ver create/get/ de controladora
 importar path en utils
 

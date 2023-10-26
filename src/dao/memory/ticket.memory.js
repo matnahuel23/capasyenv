@@ -1,9 +1,5 @@
-const ticketModel = require ('../models/ticket.model.js')
-const fs = require('fs');
-const path = require('path');
-function generateUniqueId() {
-    return Date.now().toString();
-}
+const Contenedor = require ('./fileSystem.js')
+const fs = new Contenedor () 
 
 module.exports =  class Ticket {
     constructor() {
@@ -11,22 +7,22 @@ module.exports =  class Ticket {
     }
     
     getTicket = async () => {
-        
+        return fs.getAll()
     }
 
     getTicketById = async (tid) => {
-        
+        return fs.getById(tid)
     }
 
     createTicket = async (ticket) => {
-        
-    }
-
-    updateTicket = async (tid, ticket) => {
-        
+        fs(ticket)
     }
 
     deleteTicket = async (tid) => {
-        
+        fs.deleteById(tid)
+    }
+    
+    updateTicket = async (tid, newTicket) => {
+        fs.updateObject(tid, newTicket)
     }
 }

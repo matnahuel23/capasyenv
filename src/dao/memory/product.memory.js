@@ -1,40 +1,32 @@
-const productModel = require ('../models/product.model.js')
-const fs = require('fs');
-const path = require('path');
-function generateUniqueId() {
-    return Date.now().toString();
-}
+const Contenedor = require ('./fileSystem.js')
+const fs = new Contenedor () 
 
-module.exports =  class Products {
+module.exports =  class User {
     constructor() {
         this.data = []
     }
     
-    getProducts = async () => {
-
+    getUsers = async () => {
+        return fs.getAll()
     }
 
-    getProductById = async (pid) => {
-
+    getUserById = async (pid) => {
+        return fs.getById(pid)
     }
 
-    getProductByTitle = async (title) => {
-
+    getUserByEmail = async (email) => {
+        return fs.getByEmail(email)
     }
 
-    createProduct = async (product) => {
-        
+    createUser = async (user) => {
+        fs(user)
     }
 
-    updateProduct = async (pid, product) => {
-        
+    updateUser = async (uid, user) => {
+        fs.updateObject(uid, user)
     }
 
-    deleteProduct = async (pid) => {
-        
-    }
-
-    paginate = async (conditions, options) => {
-        
+    deleteUser = async (uid) => {
+        fs.deleteById(uid)
     }
 }

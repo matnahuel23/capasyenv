@@ -1,4 +1,3 @@
-// const UserDAO = require ("../dao/classes/user.dao.js")
 const usersService = require ("../dao/factory/user.factory.js")
 const cartsService = require("../dao/factory/cart.factory.js")
 const passport = require ("passport")

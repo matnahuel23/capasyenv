@@ -1,36 +1,56 @@
-const userModel = require ("../models/user.model.js")
-const fs = require('fs');
-const path = require('path');
-function generateUniqueId() {
-    return Date.now().toString()
-}
+const Contenedor = require ('./fileSystem.js')
+const fs = new Contenedor () 
 
-module.exports =  class User {
+module.exports =  class Products {
     constructor() {
         this.data = []
     }
-
-    getUsers = async () => {
-        
+    
+    getCarts = async () => {
+        return fs.getAll()
     }
 
-    getUserById = async (id) => {
-        
+    getCartById = async (pid) => {
+        return fs.getById(pid)
     }
 
-    getUserByEmail = async (email) => {
-        
+    createCart = async (product) => {
+        fs(product)
+    }
+
+    deleteCart = async (pid) => {
+        fs.deleteById(pid)
+    }
+
+    indexProductInCart = async (cartId, productId) => {
+        try {
+            const carts = await this.getCarts();
+            const cart = carts.find((c) => c._id === cartId);
+
+            if (!cart) {
+                return -1; // Carrito no encontrado
+            }
+
+            // Itera a través de los productos en el carrito y verifica si el producto está presente
+            for (let i = 0; i < cart.products.length; i++) {
+                if (cart.products[i].product.toString() === productId) {
+                    // Si el producto está en el carrito, retorna el índice
+                    return i;
+                }
+            }
+
+            return -1; // Producto no encontrado en el carrito
+        } catch (error) {
+            console.log(error);
+            return -1; // Error en la función
+        }
     }
     
-    createUser = async (user) => {
-        
+    updateCart = async (cartId, newCart) => {
+        fs.updateObject(cartId, newCart)
     }
 
-    updateUser = async (id, user) => {
-        
-    }
-
-    deleteUser = async (id) => {
-        
+    updateCartTotal = async (cartId, newTotal) => {
+        fs.updateObject(cartId, newTotal)
     }
 }

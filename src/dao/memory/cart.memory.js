@@ -1,40 +1,56 @@
-const cartModel = require ('../models/cart.model.js')
-const fs = require('fs');
-const path = require('path');
-function generateUniqueId() {
-    return Date.now().toString();
-}
+const Contenedor = require ('./fileSystem.js')
+const fs = new Contenedor () 
 
-module.exports =  class Cart {
+module.exports =  class Products {
     constructor() {
         this.data = []
     }
     
     getCarts = async () => {
-        
+        return fs.getAll()
     }
 
-    getCartById = async (cid) => {
-        
+    getCartById = async (pid) => {
+        return fs.getById(pid)
     }
 
-    createCart = async (cart) => {
-        
+    createCart = async (product) => {
+        fs(product)
     }
 
-    updateCart = async (cid, cart) => {
-        
+    deleteCart = async (pid) => {
+        fs.deleteById(pid)
     }
 
-    updateCartTotal = async (cid, newTotal) => {
-        
-    }
+    indexProductInCart = async (cartId, productId) => {
+        try {
+            const carts = await this.getCarts();
+            const cart = carts.find((c) => c._id === cartId);
 
-    deleteCart = async (cid) => {
-        
+            if (!cart) {
+                return -1; // Carrito no encontrado
+            }
+
+            // Itera a través de los productos en el carrito y verifica si el producto está presente
+            for (let i = 0; i < cart.products.length; i++) {
+                if (cart.products[i].product.toString() === productId) {
+                    // Si el producto está en el carrito, retorna el índice
+                    return i;
+                }
+            }
+
+            return -1; // Producto no encontrado en el carrito
+        } catch (error) {
+            console.log(error);
+            return -1; // Error en la función
+        }
     }
     
-    indexProductInCart = async (cartId, productId) => {
-        
-    }     
+    updateCart = async (cartId, newCart) => {
+        fs.updateObject(cartId, newCart)
+    }
+
+    updateCartTotal = async (cartId, newTotal) => {
+        fs.updateObject(cartId, newTotal)
+    }
 }

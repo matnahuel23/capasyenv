@@ -24,6 +24,24 @@ class Contenedor {
             throw new Error('Error al obtener el ID');
         }
     }
+    async getByTitle(title) {
+        try {
+            const objects = await this.getAllObjects();
+            const obj = objects.find((o) => o.title === title);
+            return obj || null;
+        } catch (error) {
+            throw new Error('Error al obtener el Title');
+        }
+    }
+    async getByEmail(email) {
+        try {
+            const objects = await this.getAllObjects();
+            const obj = objects.find((o) => o.email === email);
+            return obj || null;
+        } catch (error) {
+            throw new Error('Error al obtener el Email');
+        }
+    }
     async getAll() {
         try {
             const objects = await this.getAllObjects();
@@ -88,6 +106,24 @@ class Contenedor {
             return obj.id;
         } catch (error) {
             throw new Error('Error al guardar o actualizar el objeto');
+        }
+    }
+    async updateObject(id, updatedData) {
+        try {
+            const objects = await this.getAllObjects();
+            const objectIndex = objects.findIndex((o) => o.id === id);
+
+            if (objectIndex === -1) {
+                throw new Error(`Objeto con ID ${id} no encontrado.`);
+            }
+
+            // Actualiza el objeto con los nuevos datos
+            objects[objectIndex] = { ...objects[objectIndex], ...updatedData };
+
+            await this.saveObjects(objects);
+            return id;
+        } catch (error) {
+            throw new Error(`Error al actualizar el objeto con ID ${id}: ${error.message}`);
         }
     }
 }

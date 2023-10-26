@@ -4,7 +4,7 @@ const mongoURL = config.mongoUrl;
 
 let Users; 
 
-switch (config.persitence) {
+switch (config.persistence) {
     case "MONGO":
         mongoose.connect(mongoURL)
             .then(() => {

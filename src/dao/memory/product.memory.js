@@ -5,7 +5,7 @@ function generateUniqueId() {
     return Date.now().toString();
 }
 
-module.exports =  class Product {
+module.exports =  class Products {
     constructor() {
         this.data = []
     }

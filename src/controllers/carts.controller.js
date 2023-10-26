@@ -1,11 +1,6 @@
-const Cart = require ("../dao/classes/cart.dao.js")
-const Product = require ("../dao/classes/product.dao.js")
-const User = require ("../dao/classes/user.dao.js")
 const path = require ("path")
-
-const cartsService = new Cart()
-const productsService = new Product()
-const usersService = new User()
+const cartsService = require("../dao/factory/cart.factory.js")
+const productsService = require ("../dao/factory/product.factory.js")
 
 getCarts = async (req, res) => {
     try {
@@ -156,6 +151,20 @@ deleteProductOfCart = async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el producto del carrito.' });
     }
 }
+clearCart = async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const cartToRemove = await cartsService.getCartById({ _id: cid });
+
+        if (!cartToRemove) {
+            return res.status(404).json({ status: "error", error: 'Carrito no encontrado' });
+        }
+        await cartsService.deleteCart({ _id: cid });
+        return res.json({ message: 'Carrito vaciado correctamente.' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al vaciar el carrito.' });
+    }
+}
 
 module.exports = {
     getCarts,
@@ -164,4 +173,5 @@ module.exports = {
     updateCart,
     deleteCart,
     deleteProductOfCart,
+    clearCart
   };

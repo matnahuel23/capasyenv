@@ -1,5 +1,5 @@
-hacer ruta/controlador de ticket
+ticket controller
+ver create/get/ de controladora
+importar path en utils
 
-crear ruta en cart /:id/purchase para dar el finalizar compra 
-
-ver clase 28 y 30 mail carrito y sms con graciasent en sms
+ver clase 28 desde pag 16 y clase 30 // mail carrito y sms con gracias

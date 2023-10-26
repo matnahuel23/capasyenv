@@ -1,6 +1,5 @@
-const Products = require ("../dao/classes/product.dao.js")
 const path = require ("path")
-const productsService = new Products();
+const productsService = require ("../dao/factory/product.factory.js")
 
 getProducts = async (req, res) => {
     try {

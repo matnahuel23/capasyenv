@@ -10,5 +10,6 @@ module.exports = {
     cookiePass: process.env.COOKIE_PASSWORD,
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL
+    callbackURL: process.env.CALLBACK_URL,
+    persistence: process.env.PERSISTENCE
 }

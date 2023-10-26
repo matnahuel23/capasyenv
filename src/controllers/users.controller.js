@@ -1,12 +1,11 @@
-const UserDAO = require ("../dao/classes/user.dao.js")
-const CartDAO = require ("../dao/classes/cart.dao.js")
+// const UserDAO = require ("../dao/classes/user.dao.js")
+const usersService = require ("../dao/factory/user.factory.js")
+const cartsService = require("../dao/factory/cart.factory.js")
 const passport = require ("passport")
 const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const config = require ("../config/config.js")
 
 const admin = config.adminName
-const usersService = new UserDAO();
-const cartsService = new CartDAO();
 
 module.exports = {
 

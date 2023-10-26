@@ -83,5 +83,5 @@ module.exports =  class Cart {
           console.error('Error en la función indexProductInCart:', error);
           return -1;
         }
-    }     
+    }   
 }

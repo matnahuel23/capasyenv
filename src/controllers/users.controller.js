@@ -150,6 +150,6 @@ deleteUser : async (req, res) => {
         console.error(error);
         return res.status(500).json({ status: 'Error', error: 'Error al eliminar el usuario y el carrito' });
     }
-},
+}
 }
    

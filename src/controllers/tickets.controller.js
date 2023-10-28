@@ -1,44 +1,58 @@
-const Ticket = require ("../dao/classes/ticket.dao.js")
-const usersService = require ("../dao/factory/user.factory.js")
-const cartsService = require("../dao/factory/cart.factory.js")
-const path = require ("path")
-const ticketService = new Ticket();
+const ticketsService = require ("../dao/factory/ticket.factory.js")
+const cartsService = require ("../dao/factory/cart.factory.js")
+const path = require ("path");
+const TicketDTO = require ('../dao/DTOs/ticket.DTO.js')
 
-getTicket = async (req, res) => {
+function generateRandomAlphaNumeric(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+    return result;
+}
+
+getTickets = async (req, res) => {
     try {
-        const products = await ticketService.getTicket()
-/*         const viewPath = path.join(__dirname, '../views/products.hbs');
-        const { first_name, email, age, cart } = req.session.user;
-        res.render(viewPath, { products, first_name, email, age, cart}) */
+        const { email, cart } = req.session.user;
+        const result = await cartsService.getCartById(cart)
+        const viewPath = path.join(__dirname, '../views/ticket.hbs');
+        res.render(viewPath, { email, result, cart});
     } catch (error) {
-        res.status(500).send({ status: "error", error: 'Error al mostrar el ticket. Detalles: ' + error.message });
+        res.send({status:"error", error: 'Error al obtener el ticket.' });
     }
 }
 getTicketById = async (req, res) => {
-    const { tid } = req.params
-    let result = await ticketService.getTicketById(tid)
-    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
-    res.send({ status: "success", result: result })
+    try {
+        let { tid } = req.params;
+        let ticket = await ticketsService.getTicketById(tid)
+        if (!ticket) {
+            res.send({ status: "error", error: 'Ticket no encontrado.' });
+        } else {
+            const viewPath = path.join(__dirname, '../views/ticket.hbs');
+            const { first_name, email, age } = req.session.user;   
+            res.render(viewPath, { cart, first_name, email, age });
+        }
+    } catch (error) {
+        res.send({ status: "error", error: 'Error al obtener el ticket.' });
+    }
 }
 createTicket = async (req, res) => {
     try {
-        let { title, description, code, price, stock, category } = req.body;
-        if (!title || !description || !code || !price || !stock || !category) {
+        let { phone } = req.body
+        const { email, cart } = req.session.user;
+        if (!phone) {
             return res.status(400).send({ status: "error", error: 'Todos los campos obligatorios deben ser proporcionados.' });
         }
-        // Agregar el producto en la base de datos
-        let result = await ticketService.createTicket({
-            title,
-            description,
-            code,
-            price,
-            status: true,
-            stock,
-            category
-        });
-        res.send({ result: "success", payload: result });
+        const result = await cartsService.getCartById(cart)
+        let code = generateRandomAlphaNumeric(10);
+        let newTicket = new TicketDTO({ code, phone, email, cart: result });
+        let ticket = await ticketsService.createTicket(newTicket)
+        res.send({ result: "success", payload: ticket });
     } catch (error) {
-        res.status(500).send({ status: "error", error: 'Error al agregar el producto. Detalles: ' + error.message });
+        console.log("Error al generar el Ticket:", error);
+        res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
 updateTicket = async (req, res) => {
@@ -49,7 +63,7 @@ updateTicket = async (req, res) => {
         if (Object.keys(ticketToReplace).length === 0) {
             return res.send({ status: "error", error: 'Debe proporcionar al menos un campo para actualizar.' });
         }
-        let result = await productsTicket.updateTicket(pid, ticketToReplace);
+        let result = await ticketsService.updateTicket(tid, ticketToReplace);
         if (!result) {
             return res.send({ status: "error", error: 'Producto no encontrado.' });
         }
@@ -63,7 +77,7 @@ updateTicket = async (req, res) => {
 deleteTicket = async (req, res) => {
     try {
         let {tid} = req.params;
-        let result = await ticketService.deleteTicket({_id: tid})
+        let result = await ticketsService.deleteTicket({_id: tid})
         res.send({ result: "success", message: 'Ticket eliminado correctamente.', payload: result })      
     } catch (error) {
         res.send({ status: "error", error: 'Error al eliminar el ticket.' });
@@ -71,7 +85,7 @@ deleteTicket = async (req, res) => {
 }
 
 module.exports = {
-    getTicket,
+    getTickets,
     getTicketById,
     createTicket,
     updateTicket,

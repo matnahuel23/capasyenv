@@ -1,7 +1,7 @@
 const ticketModel = require ('../models/ticket.model.js')
 
 module.exports =  class Ticket {
-    getTicket = async () => {
+    getTickets = async () => {
         try {
             let result = await ticketModel.find()
             return result

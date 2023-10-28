@@ -1,4 +1,4 @@
-fetch('http://localhost:8080/api/users')
+fetch('http://localhost:8080/users')
   .then(result => result.json())
   .then(data => {
     const users = data.payload;

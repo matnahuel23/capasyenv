@@ -55,7 +55,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+// cors ver en: http://localhost:5500/frontend/index.html
+app.use(cors({origin: 'http://localhost:5500', methods:['GET', 'POST','PUT']}));
 
 // Socket.io
 const users = {};

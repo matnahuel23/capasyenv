@@ -11,6 +11,9 @@ const handlebars = require('express-handlebars');
 const Contenedor = require('./dao/memory/fileSystem.js');
 const passport = require('passport');
 const config = require('./config/config.js');
+// EMAIL
+const { sendEmail } = require('./utils/email.js');
+//CORS
 const cors = require('cors');
 
 const cartsJsonPath = path.join(__dirname, 'data', 'carts.json');
@@ -138,7 +141,26 @@ app.use('/', viewsRouter);
 app.use('/', cookieRouter.router);
 app.use('/', chatsRouter.router);
 
+// EMAIL) 
+app.post('/mail', async (req, res) => {
+  const { correo, mensaje } = req.params
+  try {
+    await sendEmail( correo, mensaje ); 
+    res.send("Correo enviado con Éxito");
+  } catch (error) {
+    console.log(error);
+    res.send("Error de envío");
+  }
+});
 // Listen
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
+
+
+
+
+
+

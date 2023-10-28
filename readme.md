@@ -1,5 +1,2 @@
-ticket controller!
-ver create/get/ de controladora
-importar path en utils para usar en controller
-
-ver clase 28 desde pag 16 y clase 30 // mail carrito y sms con gracias
+ver clase 30 pag 19 integrar con app.js 
+falta ver twilio minuto 49

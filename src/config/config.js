@@ -11,5 +11,7 @@ module.exports = {
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URL,
-    persistence: process.env.PERSISTENCE
+    persistence: process.env.PERSISTENCE,
+    userMail: process.env.USER_MAIL,
+    passMail: process.env.PASS_MAIL
 }

@@ -1,8 +1,10 @@
 const ticketsService = require ("../dao/factory/ticket.factory.js")
 const cartsService = require ("../dao/factory/cart.factory.js")
 const usersService = require ("../dao/factory/user.factory.js")
+const productsService = require ("../dao/factory/product.factory.js")
 const path = require ("path");
 const TicketDTO = require ('../dao/DTOs/ticket.DTO.js')
+const { sendEmail } = require ('../utils/email.js')
 
 function generateRandomAlphaNumeric(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -46,14 +48,56 @@ createTicket = async (req, res) => {
         if (!phone) {
             return res.status(400).send({ status: "error", error: 'Todos los campos obligatorios deben ser proporcionados.' });
         }
-        const result = await cartsService.getCartById(cart);
+
+        // Obtener el carrito del usuario
+        const user = await usersService.getUserById(_id);
+        if (!user || !user.cart) {
+            return res.status(400).send({ status: "error", error: 'El usuario no tiene un carrito válido.' });
+        }
+
+        const result = await cartsService.getCartById(user.cart);
+        if (!result || !result.products || result.products.length === 0) {
+            return res.status(400).send({ status: "error", error: 'El carrito está vacío o no es válido.' });
+        }
+
         let code = generateRandomAlphaNumeric(10);
-        let newTicket = new TicketDTO({ code, phone, email, cart: result , total: result.total});
+
+        // Construye el mensaje del correo electrónico con saltos de línea y formato HTML
+        let mensaje = `
+Su compra se realizó correctamente.<br><br>
+<b>Número de código:</b> <strong>${code}</strong><br><br>
+<b>Listado de productos:</b><br>
+<ul>`;
+
+        for (const product of result.products) {
+            const productDetails = await productsService.getProductById(product.product);
+            if (productDetails) {
+                mensaje += `
+<li>${productDetails.title} x${product.quantity} $${productDetails.price * product.quantity}</li>`;
+            }
+        }
+
+        mensaje += `
+</ul><br>
+<b>Total gastado:</b> <strong>$${result.total}</strong><br><br>
+Gracias por su compra!`;
+
+        let newTicket = new TicketDTO({ code, phone, email, cart: result, total: result.total });
         await ticketsService.createTicket(newTicket);
+
+        // Envía el correo electrónico después de crear el ticket
+        try {
+            await sendEmail(email, mensaje); // Envía el correo electrónico
+            console.log('Correo electrónico enviado con éxito');
+        } catch (error) {
+            res.status(500).send({ status: "error", error: 'Error al enviar el Email. Detalles: ' + error.message });
+        }
+
         // Crear un nuevo carrito
         let newCart = await cartsService.createCart();
         // Actualizar el campo "cart" del usuario con el ID del nuevo carrito
         await usersService.updateUser(_id, { cart: newCart._id });
+
         const message = "Su compra se realizó correctamente. Número de código: " + code;
         res.status(200).json({ result: "success", message });
     } catch (error) {
@@ -61,6 +105,7 @@ createTicket = async (req, res) => {
         res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
+
 updateTicket = async (req, res) => {
     try {
         let { tid } = req.params;

@@ -12,7 +12,7 @@
         <p>Total: $ {{result.total}}</p>
 
         <!-- Formulario para ingresar el teléfono -->
-        <form action="/carts/{{cart}}/purchase" method="POST">
+        <form id="buy" action="/carts/{{cart}}/purchase" method="POST">
             <div class="form-row align-items-center">
                 <div class="col-auto">
                     <label for="phone" class="col-form-label">Teléfono:</label>
@@ -21,11 +21,12 @@
                     <input type="text" id="phone" name="phone" class="form-control form-control-sm" required>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-success btn-lg float-right">Pagar</button>
+                    <button id="payButton" type="submit" class="btn btn-success btn-lg float-right">Pagar</button>
                 </div>
             </div>
         </form>
     </div>
+    <script src="/scripts/ticketScript.js"></script>
     <script src="https://ajax.googleapis.com/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

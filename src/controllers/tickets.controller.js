@@ -48,19 +48,19 @@ createTicket = async (req, res) => {
         }
         const result = await cartsService.getCartById(cart);
         let code = generateRandomAlphaNumeric(10);
-        let newTicket = new TicketDTO({ code, phone, email, cart: result });
-        let ticket = await ticketsService.createTicket(newTicket);
+        let newTicket = new TicketDTO({ code, phone, email, cart: result , total: result.total});
+        await ticketsService.createTicket(newTicket);
         // Crear un nuevo carrito
         let newCart = await cartsService.createCart();
         // Actualizar el campo "cart" del usuario con el ID del nuevo carrito
         await usersService.updateUser(_id, { cart: newCart._id });
-        res.send({ result: "success", payload: ticket });
+        const message = "Su compra se realizó correctamente. Número de código: " + code;
+        res.status(200).json({ result: "success", message });
     } catch (error) {
         console.log("Error al generar el Ticket:", error);
         res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
-
 updateTicket = async (req, res) => {
     try {
         let { tid } = req.params;

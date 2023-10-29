@@ -1,10 +1,10 @@
 const ticketsService = require ("../dao/factory/ticket.factory.js")
 const cartsService = require ("../dao/factory/cart.factory.js")
 const usersService = require ("../dao/factory/user.factory.js")
-const productsService = require ("../dao/factory/product.factory.js")
+
 const path = require ("path");
 const TicketDTO = require ('../dao/DTOs/ticket.DTO.js')
-const { sendEmail } = require ('../utils/email.js')
+const { generateEmailContent, sendEmail } = require ('../utils/email.js')
 
 function generateRandomAlphaNumeric(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -56,38 +56,20 @@ createTicket = async (req, res) => {
         }
 
         const result = await cartsService.getCartById(user.cart);
+        const total = result.total
         if (!result || !result.products || result.products.length === 0) {
             return res.status(400).send({ status: "error", error: 'El carrito está vacío o no es válido.' });
         }
-
         let code = generateRandomAlphaNumeric(10);
+        // Construye el mensaje del correo electrónico utilizando la función de utilidad
+        const emailContent = await generateEmailContent(code, result.products, total);
 
-        // Construye el mensaje del correo electrónico con saltos de línea y formato HTML
-        let mensaje = `
-Su compra se realizó correctamente.<br><br>
-<b>Número de código:</b> <strong>${code}</strong><br><br>
-<b>Listado de productos:</b><br>
-<ul>`;
-
-        for (const product of result.products) {
-            const productDetails = await productsService.getProductById(product.product);
-            if (productDetails) {
-                mensaje += `
-<li>${productDetails.title} x${product.quantity} $${productDetails.price * product.quantity}</li>`;
-            }
-        }
-
-        mensaje += `
-</ul><br>
-<b>Total gastado:</b> <strong>$${result.total}</strong><br><br>
-Gracias por su compra!`;
-
-        let newTicket = new TicketDTO({ code, phone, email, cart: result, total: result.total });
+        let newTicket = new TicketDTO({ code, phone, email, cart: result, total });
         await ticketsService.createTicket(newTicket);
 
         // Envía el correo electrónico después de crear el ticket
         try {
-            await sendEmail(email, mensaje); // Envía el correo electrónico
+            await sendEmail(email, emailContent);
             console.log('Correo electrónico enviado con éxito');
         } catch (error) {
             res.status(500).send({ status: "error", error: 'Error al enviar el Email. Detalles: ' + error.message });
@@ -105,7 +87,6 @@ Gracias por su compra!`;
         res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
-
 updateTicket = async (req, res) => {
     try {
         let { tid } = req.params;

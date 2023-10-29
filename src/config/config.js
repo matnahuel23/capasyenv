@@ -13,5 +13,8 @@ module.exports = {
     callbackURL: process.env.CALLBACK_URL,
     persistence: process.env.PERSISTENCE,
     userMail: process.env.USER_MAIL,
-    passMail: process.env.PASS_MAIL
+    passMail: process.env.PASS_MAIL,
+    twilioAccountSID: process.env.TWILIO_ACCOUNT_SID,
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
+    twilioSmsPhone: process.env.TWILIO_SMS_PHONE
 }

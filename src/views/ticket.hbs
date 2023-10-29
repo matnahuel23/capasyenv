@@ -12,7 +12,7 @@
         <p>Total: $ {{result.total}}</p>
 
         <!-- Formulario para ingresar el teléfono -->
-        <form id="buy" action="/carts/{{cart}}/purchase" method="POST">
+        <form id="buy" action="/carts/{{cart}}/purchase" method="POST" data-cart="{{cart}}">
             <div class="form-row align-items-center">
                 <div class="col-auto">
                     <label for="phone" class="col-form-label">Teléfono:</label>

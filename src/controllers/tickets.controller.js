@@ -43,23 +43,25 @@ getTicketById = async (req, res) => {
 }
 createTicket = async (req, res) => {
     try {
-        let { phone } = req.body;
-        const { email, cart, _id } = req.session.user;
+        const { phone } = req.body;
+        const { email } = req.session.user;
+
         if (!phone) {
             return res.status(400).send({ status: "error", error: 'Todos los campos obligatorios deben ser proporcionados.' });
         }
 
         // Obtener el carrito del usuario
-        const user = await usersService.getUserById(_id);
+        const user = await usersService.getUserByEmail(email);
         if (!user || !user.cart) {
             return res.status(400).send({ status: "error", error: 'El usuario no tiene un carrito válido.' });
         }
 
         const result = await cartsService.getCartById(user.cart);
-        const total = result.total
+        const total = result.total;
         if (!result || !result.products || result.products.length === 0) {
             return res.status(400).send({ status: "error", error: 'El carrito está vacío o no es válido.' });
         }
+
         let code = generateRandomAlphaNumeric(10);
         // Construye el mensaje del correo electrónico utilizando la función de utilidad
         const emailContent = await generateEmailContent(code, result.products, total);
@@ -72,21 +74,21 @@ createTicket = async (req, res) => {
             await sendEmail(email, emailContent);
             console.log('Correo electrónico enviado con éxito');
         } catch (error) {
+            console.log('Error al enviar el correo electrónico:', error);
             res.status(500).send({ status: "error", error: 'Error al enviar el Email. Detalles: ' + error.message });
         }
 
         // Crear un nuevo carrito
         let newCart = await cartsService.createCart();
         // Actualizar el campo "cart" del usuario con el ID del nuevo carrito
-        await usersService.updateUser(_id, { cart: newCart._id });
-
+        await usersService.updateUser(user._id, { cart: newCart._id });
         const message = "Su compra se realizó correctamente. Número de código: " + code;
         res.status(200).json({ result: "success", message });
     } catch (error) {
-        console.log("Error al generar el Ticket:", error);
         res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
+
 updateTicket = async (req, res) => {
     try {
         let { tid } = req.params;

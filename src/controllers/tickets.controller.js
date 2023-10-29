@@ -1,10 +1,10 @@
 const ticketsService = require ("../dao/factory/ticket.factory.js")
 const cartsService = require ("../dao/factory/cart.factory.js")
 const usersService = require ("../dao/factory/user.factory.js")
-
 const path = require ("path");
 const TicketDTO = require ('../dao/DTOs/ticket.DTO.js')
 const { generateEmailContent, sendEmail } = require ('../utils/email.js')
+const { sendSMS } = require ('../utils/twilio.js')
 
 function generateRandomAlphaNumeric(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -83,12 +83,17 @@ createTicket = async (req, res) => {
         // Actualizar el campo "cart" del usuario con el ID del nuevo carrito
         await usersService.updateUser(user._id, { cart: newCart._id });
         const message = "Su compra se realizó correctamente. Número de código: " + code;
+        try {
+            await sendSMS( message, phone)
+            console.log('SMS enviado con éxito');
+        } catch (error) {
+            console.log('Error al enviar el SMS:', error);
+        }
         res.status(200).json({ result: "success", message });
     } catch (error) {
         res.status(500).send({ status: "error", error: 'Error al generar el Ticket. Detalles: ' + error.message });
     }
 }
-
 updateTicket = async (req, res) => {
     try {
         let { tid } = req.params;

@@ -141,7 +141,7 @@ app.use('/', viewsRouter);
 app.use('/', cookieRouter.router);
 app.use('/', chatsRouter.router);
 
-// EMAIL) 
+//EMAIL
 app.post('/mail', async (req, res) => {
   const { correo, mensaje } = req.params
   try {
@@ -152,6 +152,7 @@ app.post('/mail', async (req, res) => {
     res.send("Error de envío");
   }
 });
+//SMS
 // Listen
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

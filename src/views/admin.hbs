@@ -43,12 +43,26 @@
                 <div id="search-result">
                     <!-- Aquí se mostrarán el resultado de la búsqueda -->
                 </div>
-        </div>
+    </div>
+    <div id="user-form">
+        <h2>Buscar Usuario</h2>
+                <form id="find-form-email">
+                    <label for="find-email">Mail del Usuario</label>
+                    <input type="email" name="find-email" id="find-email" required>
+                    <button type="submit">Buscar Producto</button>
+                </form>
+                <div id="search-result-email">
+                    <!-- Aquí se mostrarán el resultado de la búsqueda -->
+                </div>
+    </div>
     <div class="fixed-bottom m-3">
         <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="./scripts/scripts.js"></script>
+    <script src="./scripts/userscript.js"></script>
+
 </body>
 
 </html>

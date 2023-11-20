@@ -1,3 +1,15 @@
+<!--    agregar a usuario PREMIUM
+        
+        agregar a admin visual Buscar usuario, si lo encuentra poder cambiar categoria a Premium o Mantener User
+        
+        agregar campo owner en producto: admin, o mail/_id del que creo el producto
+        
+        si el tipo de usuario es Premium agregar opcion crear un producto / copiarlo de admin con el campo del que lo creo
+
+        el usuario solo puede eliminar los productos que creo, el admin sigue igual
+ -->
+
+
 ADMIN
 user: adminCoder@coder.com 
 password: 1

@@ -22,7 +22,7 @@ getUsers : async (req, res) => {
 },
 getUserByEmail : async (req, res) => {
     try {
-        const { email } = req.body.email
+        const { email } = req.params
         const user = await usersService.getUserByEmail(email);
         if (!user) {
             res.send({ status: "error", error: 'Usuario no encontrado.' });

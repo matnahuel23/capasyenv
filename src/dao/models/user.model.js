@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     last_name: {type: String},
     email: {type: String},
     age: {type: Number},
-    role:{ type: String, enum: ["user", "admin"], default: "user"},
+    role:{ type: String, enum: ["user", "admin", "premium"], default: "user"},
     password: { type: String }, 
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Carrito' }
 },{ versionKey: false });

@@ -9,11 +9,7 @@ async function updateUser(user) {
             email: user.email,
             role: roleUpdateValue,
         };
-
-        // Agrega este console.log para verificar la URL
         const url = `/users/${uid}`;
-        console.log("URL de la solicitud PUT:", url);
-
         const response = await fetch(url, {
             method: "PUT",
             headers: {
@@ -44,7 +40,6 @@ async function updateUser(user) {
         console.error("Error al actualizar el usuario:", error);
     }
 }
-
 
 // Función para Eliminar el usuario
 async function deleteUser(_id){
@@ -139,5 +134,4 @@ document.getElementById("find-form-email").addEventListener("submit", async (e) 
     }
     
 });
-
 

@@ -7,8 +7,6 @@ const path = require ("path")
 const router = express.Router();
 
 // Rutas
-router.post('/restore', updateUser)
-
 router.post('/register', createUser)
 
 router.post('/login', logUser) 

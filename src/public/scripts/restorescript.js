@@ -5,11 +5,24 @@ async function updatePassUserByEmail(email, newPassword) {
             email: email,
             password: newPassword,
         };
+
         const userResponse = await fetch(`/users/search/${email}`, {
             method: "GET",
         });
         const userData = await userResponse.json();
+        if (!userData || !userData.payload || !userData.payload._id) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: `Usuario no encontrado`,
+            }).then(() => {
+                window.location.href = "/register";
+            });
+            return;
+        }
+
         const uid = userData.payload._id;
+
         // Realizar la solicitud PUT
         const url = `/users/${uid}`;
         const response = await fetch(url, {
@@ -46,6 +59,7 @@ async function updatePassUserByEmail(email, newPassword) {
         console.error("Error al actualizar el usuario:", error);
     }
 }
+
 // Escucho formulario de actualización de contraseña
 document.getElementById("updatePass").addEventListener("submit", async (e) => {
     e.preventDefault();

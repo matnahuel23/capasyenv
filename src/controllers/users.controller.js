@@ -93,11 +93,11 @@ logUser : (req, res, next) => {
     })(req, res, next);
 },
 updateUser : async (req, res) => {
-    const updates = req.body; // Contiene los campos a actualizar
-        if (!updates || Object.keys(updates).length === 0) {
-        return res.status(400).send({ status: "error", error: "Faltan datos válidos para actualizar" });
-    }
     try {
+        const updates = req.body; // Contiene los campos a actualizar
+        if (!updates || Object.keys(updates).length === 0) {
+            return res.status(400).send({ status: "error", error: "Faltan datos válidos para actualizar" });
+        }
         const user = await usersService.getUserByEmail(updates.email);
         if (!user) {
             return res.status(404).send({ status: "error", error: "Usuario no encontrado" });
@@ -111,7 +111,7 @@ updateUser : async (req, res) => {
         if (!updatedUser) {
             return res.status(500).send({ status: "error", error: "Error al actualizar el usuario" });
         }
-        res.redirect('/'); // Redirecciona de nuevo a la página de inicio de sesión
+        res.status(200).json({ result: "success", message: "Usuario actualizado exitosamente" })
     } catch (error) {
         console.error(error);
         return res.status(500).send({ status: "error", error: "Error al actualizar el usuario" });

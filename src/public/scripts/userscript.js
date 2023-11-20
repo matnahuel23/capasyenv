@@ -1,15 +1,20 @@
 // Función para actualizar el usuario
 async function updateUser(user) {
-    const uid = user._id; // Obtener el ID del usuario
-    
-    // Obtener los datos actualizados del formulario
-    const updatedUser = {
-        role: document.getElementById("roleUpdate").value,
-    };
-
-    // Realizar una solicitud PUT al servidor
     try {
-        const response = await fetch(`/users/${uid}`, {
+        const uid = user._id;
+
+        // Obtener los datos actualizados del formulario
+        const roleUpdateValue = document.getElementById("roleUpdate").value;
+        const updatedUser = {
+            email: user.email,
+            role: roleUpdateValue,
+        };
+
+        // Agrega este console.log para verificar la URL
+        const url = `/users/${uid}`;
+        console.log("URL de la solicitud PUT:", url);
+
+        const response = await fetch(url, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -23,14 +28,14 @@ async function updateUser(user) {
                 Swal.fire({
                     icon: "success",
                     title: "Usuario Actualizado",
-                    text: `Usuario ${user.email} Actualizado Exitosamente`,
-                })
+                    text: `Usuario ${user.email} Actualizado Exitosamente al rol: ${updatedUser.role}`,
+                });
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: `No se pudo actualizar el usuario`,
-                })
+                    text: `No se pudo Actualizar el usuario`,
+                });
             }
         } else {
             console.error("Error al actualizar el usuario:", response.status);
@@ -39,6 +44,7 @@ async function updateUser(user) {
         console.error("Error al actualizar el usuario:", error);
     }
 }
+
 
 // Función para Eliminar el usuario
 async function deleteUser(_id){
@@ -103,15 +109,15 @@ document.getElementById("find-form-email").addEventListener("submit", async (e) 
                 // Botón "Actualizar"
                 const updateButton = document.getElementById("update-button-user");
                 if (updateButton) {
-                    updateButton.addEventListener("click", () => {
+                    updateButton.addEventListener("click", async () => {
                         updateUser(user)
                     });
                 }
                 // Botón "Eliminar"
                 const deleteButton = document.getElementById("delete-button-user");
                 if (deleteButton) {
-                    deleteButton.addEventListener("click", () => {
-                        deleteProduct(user._id);
+                    deleteButton.addEventListener("click", async () => {
+                        deleteUser(user._id);
                     });
                 }
 

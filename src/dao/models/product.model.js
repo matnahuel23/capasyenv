@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema({
     stock:{ type: Number, required: true},
     category:{ type: String, enum: ["gaseosa", "vino", "cerveza"], default: "gaseosa", required: true },
     thumbnails:{ type: Array, required: false},
+    owner: { type: String, default: "admin"},
 },{ versionKey: false });
 
 // Aplica el plugin de paginación al modelo de productos

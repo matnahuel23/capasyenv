@@ -86,14 +86,24 @@ if (findFormEmail) {
             const response = await fetch(`/users/search/${findEmail}`, {
                 method: "GET",
             });
+            
             if (response.ok) {
                 const data = await response.json();
                 if (data.result === "success") {
                     const user = data.payload;
                     resultContainer.innerHTML = `
-                        <!-- Detalles del Usuario ... -->
+                    <h2>Detalles del Usuario</h2>
+                    <label for="email"><strong>Email:</strong></label>
+                    <input type="email" id="emailUpdate" value="${user.email}" readonly>
+                    <label for="role"><strong>Rol:</strong></label>
+                    <select id="roleUpdate">
+                    <option value="user" ${user.role === "user" ? "selected" : ""}>User</option>
+                    <option value="premium" ${user.role === "premium" ? "selected" : ""}>Premium</option>
+                    </select>
+                    <p><strong>ID:</strong> ${user._id}</p>
+                    <button id="update-button-user">Actualizar</button>
+                    <button id="delete-button-user">Eliminar</button>
                     `;
-
                     // Botón "Actualizar"
                     const updateButton = document.getElementById("update-button-user");
                     if (updateButton) {

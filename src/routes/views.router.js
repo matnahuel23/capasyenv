@@ -1,7 +1,7 @@
 const express = require ("express")
 const passport = require ("passport")
 const { getProducts} = require ('../controllers/products.controller.js')
-const { createUser, logUser, updateUser } = require ('../controllers/users.controller.js')
+const { createUser, logUser, restorePass, restorePassOk } = require ('../controllers/users.controller.js')
 const path = require ("path")
 
 const router = express.Router();
@@ -17,10 +17,9 @@ router.get('/', (req, res) => {
     res.render('login.hbs');
 });
 
-router.get('/restore', (req, res) => {
-    const email = req.query.email || ''
-    res.render('restore.hbs', { email })
-});
+router.get('/restorepassword', restorePassOk)
+
+router.post('/restore', restorePass);
 
 router.get('/faillogin', (req, res) => {
     res.redirect('/')

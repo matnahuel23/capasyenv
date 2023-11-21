@@ -1,9 +1,12 @@
 const usersService = require ("../dao/factory/user.factory.js")
+const productsService = require ("../dao/factory/product.factory.js")
 const cartsService = require("../dao/factory/cart.factory.js")
 const passport = require ("passport")
 const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const config = require ("../config/config.js")
-
+const { sendEmail, sendResetPasswordEmail } = require ("../utils/email.js")
+const jwt = require('jsonwebtoken');
+const { cookiePass } = require('../config/config.js');
 const admin = config.adminName
 const generateRandomToken = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -69,10 +72,8 @@ createUser : (req, res, next) => {
             return res.status(500).json({ error: 'Error en el registro' });
         }
         if (!user) {
-            // return res.status(400).json({ error: 'El usuario ya existe' });
             return res.redirect('/register')
         }
-        // return res.json({ message: 'Usuario creado correctamente' });
         return res.redirect('/')
     })(req, res, next);
 },
@@ -175,6 +176,34 @@ deleteUser : async (req, res) => {
         console.error(error);
         return res.status(500).json({ status: 'Error', error: 'Error al eliminar el usuario y el carrito' });
     }
+},
+restorePass : async (req, res) => {
+    const { email } = req.query
+    const user = await usersService.getUserByEmail(email);
+    
+    if (!user) {
+        return res.redirect('/register');
+    }
+    
+    const token = jwt.sign({ email }, cookiePass, { expiresIn: '1h' });
+
+    // Incluye el token en el enlace del correo electrónico
+    const resetPasswordLink = `http://localhost:8080/restorepassword?token=${token}/user/${email}`;
+
+    // Envía el correo electrónico con el enlace de restablecimiento
+    const emailContent = await sendResetPasswordEmail(resetPasswordLink);
+    
+    try {
+        await sendEmail(email, emailContent);
+        res.redirect('/');
+    } catch (error) {
+        console.log('Error al enviar el correo electrónico:', error);
+        res.status(500).send({ status: "error", error: 'Error al enviar el Email. Detalles: ' + error.message });
+    }
+},
+restorePassOk : async (req, res) => {
+
 }
+
 }
    

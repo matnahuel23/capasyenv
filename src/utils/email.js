@@ -15,11 +15,11 @@ const transport = nodemailer.createTransport({
     }
 });
 
-function sendEmail(correo, mensaje) {
+function sendEmail(email, mensaje) {
   const mailOptions = {
     from: `Ecomerce <${userMail}>`,
-    to: `${correo}`,
-    subject: 'Compra completada',
+    to: `${email}`,
+    subject: 'Solicitud completada',
     html: `
       <div>
         <h2>Ecommerce de Matías Nahuel!</h2>
@@ -40,7 +40,6 @@ function sendEmail(correo, mensaje) {
     });
   });
 }
-
 async function generateEmailContent(code, products, total) {
   // Obtener los detalles de los productos del carrito
   const productDetails = [];
@@ -75,5 +74,14 @@ Gracias por su compra!`;
 
   return emailContent;
 }
+async function sendResetPasswordEmail(resetPasswordLink) {
+  let emailContent = `
+  Recibimos un pedido para actualizar su contraseña.<br><br>
+  <b>Ingrese al siguiente vinculo para restablecerla:</b> <strong>${resetPasswordLink}</strong><br><br>
+  <b>Si usted no hizo el pedido no haga nada</b><br>
+  <b>Gracias por utilizar este Ecommerce</b><br>
+  `  
+  return emailContent;
+}
 
-module.exports = { generateEmailContent, sendEmail };
+module.exports = { generateEmailContent, sendEmail, sendResetPasswordEmail };

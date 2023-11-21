@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Logueo</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <!-- views/login.hbs -->
+
 <body>
     <h1>Login</h1>
     <div>
-        <form method="POST" action="/login">
+        <form id="loginForm" method="POST" action="/login">
             <label for="email">Email</label>
-            <input type="email" name="email" required autocomplete="current-emaily">
+            <input type="email" name="email" id="email" required autocomplete="current-email">
 
             <label for="password">Password</label>
-            <input type="password" name="password" required autocomplete="current-password">
+            <input type="password" name="password" id="password" required autocomplete="current-password">
 
             <button type="submit">Login</button>
         </form>
-        <div id="botonera">
-            <a href="/restore"><button>Restaurar la contraseña</button></a>
-            <a href="/register"><button>Registrarse</button></a>
-            <a href="/githubcallback"><button>Loguearse con GitHub</button></a>
-        </div> 
+        <div id="botonera" style="display: flex; gap: 10px;">
+            <form id="restoreForm" method="POST" action="/restore">
+                <button type="button" onclick="restorePassword()">Restaurar la contraseña</button>
+            </form>
+            <a href="/register"><button type="button">Registrarse</button></a>
+            <a href="/githubcallback"><button type="button">Loguearse con GitHub</button></a>
+        </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            function restorePassword() {
+                var emailValue = document.getElementById("email").value;
+                document.getElementById("restoreForm").action = "/restore?email=" + emailValue;
+                document.getElementById("restoreForm").submit();
+            }
+        </script>
     </div>
 </body>
+
 </html>
+

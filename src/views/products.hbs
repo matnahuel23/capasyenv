@@ -104,6 +104,12 @@
     <a href="/logout"><button class="btn btn-danger float-right">Desloguearse</button></a>
     </ul>
 </div>
+    {{#if premiumUser}}
+        <!-- Agregar botón premium solo si el usuario tiene el rol premium -->
+        <form id="premiumActionForm-{{this._id}}" action="/premium-action/{{this._id}}" method="POST">
+            <button class="btn btn-warning" type="submit">Acción Premium</button>
+        </form>
+    {{/if}}
     <script>
         const cart = "{{cart}}";
     </script>

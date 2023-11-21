@@ -65,10 +65,27 @@ createUser : (req, res, next) => {
         return res.redirect('/')
     })(req, res, next);
 },
-logUser : (req, res, next) => {
+logUser: (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
         // Guarda el ID de la sesión en una cookie personalizada
         res.cookie('sessionID', req.sessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
+
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error en el logueo' });
+        }
+
+        if (!user) {
+            if (info && info.message === 'Contraseña incorrecta.') {
+                // Contraseña incorrecta, redirigir a /restore
+                return res.redirect('/restore');
+            } else {
+                // Usuario no encontrado, redirigir a /register
+                return res.redirect('/register');
+            }
+        }
+
+        // Usuario autenticado correctamente
         req.session.user = {
             first_name: user.first_name,
             last_name: user.last_name,
@@ -76,13 +93,7 @@ logUser : (req, res, next) => {
             email: user.email,
             cart: user.cart
         };
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Error en el logueo' });
-        }
-        if (!user) {
-            return res.redirect('/register');
-        }
+
         if (user.email === admin) {
             req.session.admin = true;
             return res.redirect('/admin');

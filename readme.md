@@ -1,8 +1,9 @@
 <!--            
-       
         si el tipo de usuario es Premium agregar opcion crear un producto / copiarlo de admin con el campo del que lo creo
 
         el usuario solo puede eliminar los productos que creo, el admin sigue igual
+
+        ver token de 1 hora enviar mail usando util
  -->
 
 

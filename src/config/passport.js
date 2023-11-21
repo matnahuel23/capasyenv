@@ -65,11 +65,11 @@ const configureLocalStrategy = () => {
             const user = await usersService.getUserByEmail(email);
             if (!user) {
                 console.log('El usuario no existe');
-                return done(null, false);
+                return done(null, false, { message: 'Usuario no encontrado.' });
             }
             if (!isValidatePassword(user, password)) {
                 console.log('Contraseña incorrecta');
-                return done(null, false);
+                return done(null, false, { message: 'Contraseña incorrecta.' });
             }
             return done(null, user);
         } catch (error) {
@@ -77,6 +77,7 @@ const configureLocalStrategy = () => {
             return done(error);
         }
     }));
+    
 }
 const configureGitHubStrategy = () => { 
     // Configuración de la estrategia de registro con GitHub, previamente instale passport-github2

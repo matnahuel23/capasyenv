@@ -30,7 +30,11 @@ router.get('/admin', async (req, res) => {
     try {
         const viewPath = path.join(__dirname, '../views/admin.hbs');
         const { first_name, email, age, role } = req.session.user;
-        res.render(viewPath, { first_name, email, age, role });
+        let userAdmin = false
+        if(role === "admin"){
+            userAdmin = true
+        }
+        res.render(viewPath, { first_name, email, age, role, userAdmin });
     } catch (error) {
         res.status(500).json({ error: 'Error en el ingreso al admin.' });
     }

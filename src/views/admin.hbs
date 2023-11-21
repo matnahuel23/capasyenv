@@ -8,9 +8,13 @@
 
 <body>
     <div class="container text-right text-muted mt-2">
-        <h5>Administrador: {{first_name}}</h5>
+        <h5>Bienvenido: {{first_name}}</h5>
     </div>
-    <h1>CRUD Productos</h1>
+    {{#if userAdmin}}
+    <h1>Administrador</h1>
+        {{else}}
+            <h1>Premium</h1>
+    {{/if}}
     <div id="product-form">
         <h2>Agregar Producto</h2>
         <form id="form" action="/products" method="post">
@@ -44,17 +48,19 @@
                     <!-- Aquí se mostrarán el resultado de la búsqueda -->
                 </div>
     </div>
-    <div id="user-form">
-        <h2>Buscar Usuario</h2>
-                <form id="find-form-email">
-                    <label for="find-email">Mail del Usuario</label>
-                    <input type="email" name="find-email" id="find-email" required>
-                    <button type="submit">Buscar Producto</button>
-                </form>
-                <div id="search-result-email">
-                    <!-- Aquí se mostrarán el resultado de la búsqueda -->
-                </div>
-    </div>
+    {{#if userAdmin}}
+        <div id="user-form">
+            <h2>Buscar Usuario</h2>
+                    <form id="find-form-email">
+                        <label for="find-email">Mail del Usuario</label>
+                        <input type="email" name="find-email" id="find-email" required>
+                        <button type="submit">Buscar Producto</button>
+                    </form>
+                    <div id="search-result-email">
+                        <!-- Aquí se mostrarán el resultado de la búsqueda -->
+                    </div>
+        </div>
+    {{/if}}
     <div class="fixed-bottom m-3">
         <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     </div>

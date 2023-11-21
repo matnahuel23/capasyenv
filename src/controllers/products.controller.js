@@ -105,13 +105,25 @@ updateProduct = async (req, res) => {
 }
 deleteProduct = async (req, res) => {
     try {
-        let {pid} = req.params;
-        let result = await productsService.deleteProduct({_id: pid})
-        res.send({ result: "success", message: 'Producto eliminado correctamente.', payload: result })      
+        let { pid } = req.params;
+        const { email, role } = req.session.user;
+        const product = await productsService.getProductById(pid)
+        if (!product) {
+            return res.send({ status: "error", error: 'Producto no encontrado.' });
+        }
+
+        if (role !== "admin" && product.owner !== email) {
+            return res.send({ status: "error", error: 'No tienes permiso para eliminar este producto.' });
+        }
+
+        let result = await productsService.deleteProduct({_id: pid});
+        res.send({ result: "success", message: 'Producto eliminado correctamente.', payload: result });
     } catch (error) {
+        console.error(`Error: ${error}`);
         res.send({ status: "error", error: 'Error al eliminar el producto.' });
     }
-}
+};
+
 
 module.exports = {
     getProducts,

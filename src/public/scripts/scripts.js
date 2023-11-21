@@ -96,27 +96,36 @@ async function updateProduct(product) {
 }
 
 // Función para Eliminar el producto
-async function deleteProduct(_id){
+async function deleteProduct(_id) {
     const deleteId = _id; // Obtener el ID del producto
-    
+
     try {
         const response = await fetch(`/products/${deleteId}`, {
             method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ _id: deleteId }),
         });
 
         if (response.ok) {
             socket.emit('deleteProduct', deleteId);
-            Swal.fire({
-                icon: "success",
-                title: "Producto eliminado",
-                text: `El producto con ID ${deleteId} ha sido eliminado exitosamente`,
-            });
+            const responseData = await response.json();
+            if (responseData.result === "success") {
+                Swal.fire({
+                    icon: "success",
+                    title: "Producto eliminado",
+                    text: `El producto con ID ${deleteId} ha sido eliminado exitosamente`,
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: `No se pudo eliminar el producto con ID ${deleteId}`,
+                });
+            }
         } else {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: `No se pudo eliminar el producto con ID ${deleteId}`,
-            });
+            console.error("Error al eliminar el producto:", response.status);
         }
     } catch (error) {
         console.error("Error al eliminar el producto:", error);

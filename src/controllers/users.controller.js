@@ -8,6 +8,8 @@ const { sendEmail, sendResetPasswordEmail } = require ("../utils/email.js")
 const jwt = require('jsonwebtoken');
 const { cookiePass } = require('../config/config.js');
 const admin = config.adminName
+const path = require('path');
+
 const generateRandomToken = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let randomString = '';
@@ -188,7 +190,7 @@ restorePass : async (req, res) => {
     const token = jwt.sign({ email }, cookiePass, { expiresIn: '1h' });
 
     // Incluye el token en el enlace del correo electrónico
-    const resetPasswordLink = `http://localhost:8080/restorepassword?token=${token}/user/${email}`;
+    const resetPasswordLink = `http://localhost:8080/restorepassword?token=${token}`;
 
     // Envía el correo electrónico con el enlace de restablecimiento
     const emailContent = await sendResetPasswordEmail(resetPasswordLink);
@@ -201,8 +203,19 @@ restorePass : async (req, res) => {
         res.status(500).send({ status: "error", error: 'Error al enviar el Email. Detalles: ' + error.message });
     }
 },
-restorePassOk : async (req, res) => {
-
+restorePassOk : async (req, res) =>  {
+    const { token } = req.query;
+    // Verificar y decodificar el token
+    jwt.verify(token, cookiePass, (err, decoded) => {
+        if (err) {
+            // Token inválido o expirado
+            return res.status(401).send('Token inválido o expirado.');
+        }
+        // El token es válido, puedes continuar con la página de restablecimiento de contraseña
+        const email = decoded.email;
+        const viewPath = path.join(__dirname, '../views/restorepassword.hbs');
+        res.render(viewPath, { email})
+    });
 }
 
 }

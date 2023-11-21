@@ -100,16 +100,13 @@
     </div>
     <div class="container text-right text-muted mt-2">
     <h6>Estás logueado como: {{first_name}}</h6>
+    {{#if userPremium}}
+            <a href="/premium" class="btn btn-warning">Acción Premium</a>
+    {{/if}}
     <a href="/chat" class="btn btn-success">Chat</a>
     <a href="/logout"><button class="btn btn-danger float-right">Desloguearse</button></a>
     </ul>
 </div>
-    {{#if premiumUser}}
-        <!-- Agregar botón premium solo si el usuario tiene el rol premium -->
-        <form id="premiumActionForm-{{this._id}}" action="/premium-action/{{this._id}}" method="POST">
-            <button class="btn btn-warning" type="submit">Acción Premium</button>
-        </form>
-    {{/if}}
     <script>
         const cart = "{{cart}}";
     </script>

@@ -53,7 +53,7 @@ function applyFilters() {
 document.querySelectorAll('form[id^="addToCartForm-"]').forEach(function (form) {
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
-        const formId = this.id; // Obtén el ID completo del formulario
+        const formId = this.id; // Obtiene el ID completo del formulario
         const productIdFromFormId = formId.replace("addToCartForm-", "");
         const quantityInput = this.querySelector('input[name="quantity"]');
         const quantity = parseInt(quantityInput.value);
@@ -78,16 +78,26 @@ document.querySelectorAll('form[id^="addToCartForm-"]').forEach(function (form) 
             });
 
             if (response.ok) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Éxito',
-                    text: 'Producto agregado al carrito correctamente.',
-                    timer: 2000
-                });
-                // Espera 2 segundos antes de recargar la página
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+                const responseData = await response.json();
+                if (responseData.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: responseData.message,
+                        timer: 2000
+                    });
+                    // Espera 2 segundos antes de recargar la página
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: responseData.message || 'Hubo un error al agregar el producto.',
+                        timer: 2000
+                    });
+                }
             } else {
                 Swal.fire({
                     icon: 'error',

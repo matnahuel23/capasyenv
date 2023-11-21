@@ -38,9 +38,11 @@ createCart = async (req, res) => {
 }
 updateCart = async (req, res) => {
     try {
+        const { email } = req.session.user;
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = parseInt(req.body.quantity);
+        
         if (quantity <= 0) {
             return res.send({ status: "error", error: 'Debe ingresar al menos una unidad del producto.' });
         }
@@ -55,6 +57,10 @@ updateCart = async (req, res) => {
         if (product.stock < quantity) {
             return res.send({ status: "error", error: 'No disponemos de ese stock' });
         }
+        // Valido que el propietario del producto no pueda agregar su producto
+        if ( email === product.owner){
+            return res.send({ status: "error", error: 'No puede agregar un producto que le pertenece' });
+        }
         // Verifica si el producto ya está en el carrito
         const existingProductIndex = await cartsService.indexProductInCart(cid, pid);
         if (existingProductIndex !== -1) {
@@ -68,15 +74,16 @@ updateCart = async (req, res) => {
         cartAdd.markModified('products');
         const newStock = product.stock-quantity
         product.stock = newStock
+        const newTotal = cartAdd.total + (product.price * quantity);
+        cartAdd.total = newTotal;
         await cartsService.updateCart(cid, cartAdd);
         await productsService.updateProduct(pid, product);
-        // Actualiza el total del carrito
-        const newTotal = cartAdd.total + (product.price * quantity);
-        const totalUpdateResult = await cartsService.updateCartTotal(cid, newTotal);
-        return res.json({ message: 'Producto agregado al carrito correctamente.' });
+        // Envía la respuesta al cliente
+        return res.json({ status: "success", message: 'Producto agregado al carrito correctamente.' });
     } catch (error) {
         console.error('Error al agregar el producto:', error);
-        return res.status(500).json({ message: 'Error al agregar el producto.' });
+        // Envía la respuesta de error al cliente
+        return res.status(500).json({ status: "error", message: 'Error al agregar el producto.' });
     }
 }
 deleteCart = async (req, res) => {

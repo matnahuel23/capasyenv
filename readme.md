@@ -1,8 +1,5 @@
-<!--            
-        si el tipo de usuario es Premium agregar opcion crear un producto / copiarlo de admin con el campo del que lo creo
-
-        el usuario solo puede eliminar los productos que creo, el admin sigue igual
-
+<!--    
+        email no puede agregar product.owner
         enviar mail usando utils
  -->
 

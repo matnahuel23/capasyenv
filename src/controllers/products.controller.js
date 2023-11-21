@@ -124,7 +124,6 @@ deleteProduct = async (req, res) => {
     }
 };
 
-
 module.exports = {
     getProducts,
     getProductById,

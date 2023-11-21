@@ -130,38 +130,51 @@ document.getElementById("find-form-title").addEventListener("submit", async (e) 
             if (data.result === "success") {
                 const product = data.payload;
                 resultContainer.innerHTML = `
-                    <h3>Detalles del Producto</h3>
-                    <label for="title"><strong>Nombre:</strong></label>
-                    <input type="text" id="titleUpdate" value="${product.title}">
-                    
-                    <label for="description"><strong>Descripción:</strong></label>
-                    <input type="text" id="descriptionUpdate" value="${product.description}">
-                    
-                    <label for="code"><strong>Código:</strong></label>
-                    <input type="number" id="codeUpdate" value="${product.code}">
-                    
-                    <label for="price"><strong>Precio:</strong></label>
-                    <input type="number" id="priceUpdate" value="${product.price}">
-                    
-                    <label for="stock"><strong>Stock:</strong></label>
-                    <input type="number" id="stockUpdate" value="${product.stock}">
-                    
-                    <label for="category"><strong>Categoría:</strong></label>
-                    <select id="categoryUpdate">
-                        <option value="gaseosa" ${product.category === "gaseosa" ? "selected" : ""}>Gaseosa</option>
-                        <option value="vino" ${product.category === "vino" ? "selected" : ""}>Vino</option>
-                        <option value="cerveza" ${product.category === "cerveza" ? "selected" : ""}>Cerveza</option>
-                    </select>
-                    
-                    <label for="thumbnails"><strong>Imagen:</strong></label>
-                    <input type="file" name="thumbnails" id="thumbnailsUpdate">
-
-                    <p><strong>ID:</strong> ${product._id}</p>
-
-                    <button id="update-button">Actualizar</button>
-                    <button id="delete-button">Eliminar</button>
-                `;
-
+                <div>
+                    <h2>Detalles del Producto</h2>
+            
+                    <div>
+                        <label for="title"><strong>Nombre:</strong></label>
+                        <input type="text" id="titleUpdate" value="${product.title}">
+                        <label for="description"><strong>Descripción:</strong></label>
+                        <input type="text" id="descriptionUpdate" value="${product.description}">
+                        <label for="code"><strong>Código:</strong></label>
+                        <input type="number" id="codeUpdate" value="${product.code}">
+                    </div>
+            
+                    <div>
+                        <label for="price"><strong>Precio:</strong></label>
+                        <input type="number" id="priceUpdate" value="${product.price}">
+                        <label for="stock"><strong>Stock:</strong></label>
+                        <input type="number" id="stockUpdate" value="${product.stock}">
+                        <label for="category"><strong>Categoría:</strong></label>
+                        <select id="categoryUpdate">
+                            <option value="gaseosa" ${product.category === "gaseosa" ? "selected" : ""}>Gaseosa</option>
+                            <option value="vino" ${product.category === "vino" ? "selected" : ""}>Vino</option>
+                            <option value="cerveza" ${product.category === "cerveza" ? "selected" : ""}>Cerveza</option>
+                        </select>
+                    </div>
+            
+                    <div>
+                        <label for="thumbnails"><strong>Imagen:</strong></label>
+                        <input type="file" name="thumbnails" id="thumbnailsUpdate">
+                    </div>
+            
+                    <div>
+                        <label for="owner"><strong>Propietario:</strong></label>
+                        <input type="text" id="ownerUpdate" value="${product.owner}" readonly>
+                    </div>
+            
+                    <div>
+                        <p><strong>ID:</strong> ${product._id}</p>
+                    </div>
+            
+                    <div>
+                        <button id="update-button">Actualizar</button>
+                        <button id="delete-button">Eliminar</button>
+                    </div>
+                </div>
+            `;    
                 // Botón "Actualizar"
                 const updateButton = document.getElementById("update-button");
                 if (updateButton) {

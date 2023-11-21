@@ -84,7 +84,7 @@ document.getElementById("find-form-email").addEventListener("submit", async (e) 
             if (data.result === "success") {
                 const user = data.payload;
                 resultContainer.innerHTML = `
-                    <h3>Detalles del Usuario</h3>
+                    <h2>Detalles del Usuario</h2>
                     
                     <label for="email"><strong>Email:</strong></label>
                     <input type="email" id="emailUpdate" value="${user.email}" readonly>

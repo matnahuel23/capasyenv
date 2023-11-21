@@ -7,6 +7,7 @@ module.exports = class ProductDTO {
         this.stock = product.stock,
         this.category = product.category,
         this.status = true,
-        this.thumbnails = product.thumbnails ? [thumbnails] : [];
+        this.thumbnails = product.thumbnails ? [thumbnails] : [],
+        this.owner = product.owner;
     }
 }

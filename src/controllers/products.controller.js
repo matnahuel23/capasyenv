@@ -55,8 +55,14 @@ getProductByTitle = async (req, res) => {
 }
 createProducts = async (req, res) => {
     try {
+        const { email, role } = req.session.user
+        let owner = "admin"
+        if(role !== "admin"){
+            owner = email
+        }
+        console.log(owner)
         let { title, description, code, price, stock, category, thumbnails } = req.body;
-        let product = new ProductDTO({title, description, code, price, stock, category, thumbnails})
+        let product = new ProductDTO({title, description, code, price, stock, category, thumbnails, owner})
         if (!title || !description || !code || !price || !stock || !category) {
             return res.status(400).send({ status: "error", error: 'Todos los campos obligatorios deben ser proporcionados.' });
         }

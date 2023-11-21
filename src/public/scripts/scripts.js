@@ -50,7 +50,18 @@ async function updateProduct(product) {
         price: document.getElementById("priceUpdate").value,
         stock: document.getElementById("stockUpdate").value,
         category: document.getElementById("categoryUpdate").value,
+        owner: document.getElementById("ownerUpdate").value,
+        thumbnails: document.getElementById("thumbnailsUpdate").value
     };
+    // Verificar si el usuario es el propietario del producto
+    if (product.owner !== updatedProduct.owner) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No tienes permiso para actualizar este producto.",
+        });
+        return;
+    }
 
     // Realizar una solicitud PUT al servidor
     try {
@@ -61,7 +72,6 @@ async function updateProduct(product) {
             },
             body: JSON.stringify(updatedProduct),
         });
-
         if (response.ok) {
             const data = await response.json();
             if (data.result === "success") {

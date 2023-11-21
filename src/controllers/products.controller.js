@@ -60,7 +60,6 @@ createProducts = async (req, res) => {
         if(role !== "admin"){
             owner = email
         }
-        console.log(owner)
         let { title, description, code, price, stock, category, thumbnails } = req.body;
         let product = new ProductDTO({title, description, code, price, stock, category, thumbnails, owner})
         if (!title || !description || !code || !price || !stock || !category) {
@@ -75,8 +74,14 @@ createProducts = async (req, res) => {
 }
 updateProduct = async (req, res) => {
     try {
+        const { email, role } = req.session.user
         let { pid } = req.params;
         const productToReplace = req.body;
+
+        // Verificamos si el usuario tiene el rol de administrador o es el propietario del producto
+        if (role !== "admin" && productToReplace.owner !== email) {
+            return res.send({ status: "error", error: 'No tienes permiso para actualizar este producto.' });
+        }
         // Validamos que se proporcionen campos para actualizar
         if (Object.keys(productToReplace).length === 0) {
             return res.send({ status: "error", error: 'Debe proporcionar al menos un campo para actualizar.' });

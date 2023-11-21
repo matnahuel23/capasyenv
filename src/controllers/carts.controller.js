@@ -19,9 +19,9 @@ getCartById = async (req, res) => {
             res.send({ status: "error", error: 'Carrito no encontrado.' });
         } else {
             const viewPath = path.join(__dirname, '../views/cart.hbs');
-            const { first_name, email, age } = req.session.user;            
+            const { first_name, email, age, role } = req.session.user;            
             // Renderiza la vista HBS y pasa los datos
-            res.render(viewPath, { cart, first_name, email, age });
+            res.render(viewPath, { cart, first_name, email, age, role });
         }
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el carrito.' });

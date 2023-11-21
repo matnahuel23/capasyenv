@@ -23,7 +23,7 @@ module.exports =  class User {
 
     getUserByEmail = async (email) => {
         try {
-            let user = await userModel.findOne({ email: email }, { email: 1, first_name: 1, last_name: 1 , age: 1, cart: 1, password: 1 });
+            let user = await userModel.findOne({ email: email }, { email: 1, first_name: 1, last_name: 1 , age: 1, cart: 1, password: 1, role: 1 });
             return user;
         } catch (error) {
             console.log(error);

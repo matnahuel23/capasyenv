@@ -5,6 +5,17 @@ const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const config = require ("../config/config.js")
 
 const admin = config.adminName
+const generateRandomToken = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomString = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
+};
 
 module.exports = {
 
@@ -67,9 +78,11 @@ createUser : (req, res, next) => {
 },
 logUser: (req, res, next) => {
     passport.authenticate('login', (err, user, info) => {
-        // Guarda el ID de la sesión en una cookie personalizada
-        res.cookie('sessionID', req.sessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
-
+        
+        // Genera un número aleatorio de 6 dígitos para la cookie
+        const randomSessionID = generateRandomToken(6);
+        res.cookie('sessionIDexpire', randomSessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
+        
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Error en el logueo' });
@@ -91,7 +104,8 @@ logUser: (req, res, next) => {
             last_name: user.last_name,
             age: user.age,
             email: user.email,
-            cart: user.cart
+            cart: user.cart,
+            role: user.role
         };
 
         if (user.email === admin) {

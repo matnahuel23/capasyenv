@@ -3,7 +3,7 @@
 
         el usuario solo puede eliminar los productos que creo, el admin sigue igual
 
-        ver token de 1 hora enviar mail usando util
+        enviar mail usando utils
  -->
 
 

@@ -18,10 +18,10 @@ function generateRandomAlphaNumeric(length) {
 
 getTickets = async (req, res) => {
     try {
-        const { email, cart } = req.session.user;
+        const { email, cart, role } = req.session.user;
         const result = await cartsService.getCartById(cart)
         const viewPath = path.join(__dirname, '../views/ticket.hbs');
-        res.render(viewPath, { email, result, cart});
+        res.render(viewPath, { email, result, cart, role});
     } catch (error) {
         res.send({status:"error", error: 'Error al obtener el ticket.' });
     }
@@ -34,8 +34,8 @@ getTicketById = async (req, res) => {
             res.send({ status: "error", error: 'Ticket no encontrado.' });
         } else {
             const viewPath = path.join(__dirname, '../views/ticket.hbs');
-            const { first_name, email, age } = req.session.user;   
-            res.render(viewPath, { cart, first_name, email, age });
+            const { first_name, email, age, role } = req.session.user;   
+            res.render(viewPath, { cart, first_name, email, age, role });
         }
     } catch (error) {
         res.send({ status: "error", error: 'Error al obtener el ticket.' });

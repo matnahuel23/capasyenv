@@ -25,7 +25,7 @@ const configureLocalStrategy = () => {
 // Configuración de la estrategia local de registro
     passport.use('register', new localStrategy(
         { passReqToCallback: true, usernameField: 'email'}, async (req, username, password, done) => {
-            const { first_name, last_name, email, age } = req.body;
+            const { first_name, last_name, email, age, role } = req.body;
             let products = [];
             let total= 0;
             try {
@@ -43,7 +43,8 @@ const configureLocalStrategy = () => {
                     email,
                     age,
                     password: createHash(password),
-                    cart: newCart._id
+                    cart: newCart._id,
+                    role
                 })
 
                 if (email === admin) {
@@ -100,7 +101,8 @@ const configureGitHubStrategy = () => {
                     age:18,
                     email:profile._json.email,
                     password:'', // al ser autentificacion de terceros, no podemos asignar un password
-                    cart: newCart._id
+                    cart: newCart._id,
+                    role
                 }
                 let result = await usersService.createUser(newUser)
                 done(null, result)

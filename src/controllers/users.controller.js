@@ -93,8 +93,7 @@ logUser: (req, res, next) => {
 
         if (!user) {
             if (info && info.message === 'Contraseña incorrecta.') {
-                // Contraseña incorrecta, redirigir a /restore
-                return res.redirect('/restore');
+                return res.redirect('/');
             } else {
                 // Usuario no encontrado, redirigir a /register
                 return res.redirect('/register');
@@ -132,7 +131,12 @@ updateUser : async (req, res) => {
         }
         // Si se proporciona una nueva contraseña en los campos a actualizar, usar createHash
         if (updates.password) {
-            updates.password = createHash(updates.password);
+            const response = isValidatePassword(user, updates.password)
+            if(!response){
+                updates.password = createHash(updates.password);
+            }else{
+                return res.send({ status: "error", error: "No se puede repetir password" })
+            }
         }
         // Actualiza los campos recibidos en el body
         const updatedUser = await usersService.updateUser(user._id, updates);

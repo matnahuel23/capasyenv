@@ -2,30 +2,28 @@ ADMIN
 user: adminCoder@coder.com 
 password: 1
 
-![capas](src/public/prints/1capas.png)
+![boton restaurar contraseña](src/public/prints/1%20boton%20restaurar%20y%20envio%20mail.png)
 
-![admin](src/public/prints/2admin.png)
+![mail restauracion con token](src/public/prints/2%20mail%20cambio%20password.png)
 
-![crud admin](src/public/prints/3crud%20admin.png)
+![no puedo repetir ultima contraseña](src/public/prints/3%20no%20se%20puede%20repetir%20pass.png)
 
-![user productos](src/public/prints/4usuarioAddToCard.png)
+![password actualizado OK](src/public/prints/4%20pass%20actualizado%20ok.png)
 
-![chat presentacion](src/public/prints/5chat%20inicio.png)
+![administrador cambia rol user/premium](src/public/prints/5%20admin%20puede%20cambiar%20rol%20a%20premium.png)
 
-![chat](src/public/prints/6chat%20ok!.png)
+![usuario con nuevo rol](src/public/prints/6%20usuario%20actualizado.png)
 
-![cart](src/public/prints/7my%20cart!.png)
+![nuevos permisos para premium](src/public/prints/7%20premium%20con%20opcion%20extra.png)
 
-![delete prod cart](src/public/prints/8my%20cart%20delete%20products.png)
+![premium add producto](src/public/prints/8%20premium%20agrega%20productos.png)
 
-![pagar](src/public/prints/9pagar.png)
+![propietario del producto](src/public/prints/9%20propietario%20de%20producto.png)
 
-![ticket ok](src/public/prints/10ticket%20ok.png)
+![solo propietario o admin pueden actualizar/eliminar producto](src/public/prints/10%20no%20puedo%20actualizar%20sino%20soy%20propietario%20o%20admin.png)
 
-![mail ok](src/public/prints/11mail%20de%20compra.png)
+![administrador con permisos full](src/public/prints/11%20admin%20actualiza%20o%20elimina%20cualquier%20producto.png)
 
-![sms ok](src/public/prints/12sms%20ticket%20ok.jpeg)
+![no se puede agregar productos propios al carrito propio](src/public/prints/12%20un%20owner%20no%20se%20puede%20agregar%20sus%20productos.png)
 
-![mongo db ok](src/public/prints/13mongo%20ticket.png)
-
-![new cart vacio](src/public/prints/14nuevo%20cart%20luego%20de%20ticket%20ok.png)
+![se puede agregar productos de otro al carrito propio](src/public/prints/13%20un%20usuario%20puede%20agregar%20al%20carrito%20productos%20de%20otro%20propietario%20o%20admin.png)

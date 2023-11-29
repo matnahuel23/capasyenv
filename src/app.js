@@ -152,16 +152,8 @@ app.post('/mail', async (req, res) => {
     res.send("Error de envío");
   }
 });
-//SMS
+
 // Listen
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-
-
-
-

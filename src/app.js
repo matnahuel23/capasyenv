@@ -149,10 +149,12 @@ const usersRouter = require('./routes/users.router.js');
 const viewsRouter = require('./routes/views.router.js');
 const cookieRouter = require('./routes/cookie.router.js');
 const chatsRouter = require('./routes/chat.router.js');
+const ticketsRouter = require('./routes/tickets.router.js')
 
 app.use('/products', productsRouter.router);
 app.use('/carts', cartsRouter.router);
 app.use('/users', usersRouter.router);
+app.use('/tickets', ticketsRouter.router)
 app.use('/', viewsRouter);
 app.use('/', cookieRouter.router);
 app.use('/', chatsRouter.router);

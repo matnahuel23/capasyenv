@@ -18,12 +18,10 @@ function generateRandomAlphaNumeric(length) {
 
 getTickets = async (req, res) => {
     try {
-        const { email, cart, role } = req.session.user;
-        const result = await cartsService.getCartById(cart)
-        const viewPath = path.join(__dirname, '../views/ticket.hbs');
-        res.render(viewPath, { email, result, cart, role});
+        let tickets = await ticketsService.getTickets()
+        res.send({result:"success", payload:tickets})
     } catch (error) {
-        res.send({status:"error", error: 'Error al obtener el ticket.' });
+        res.send({status:"error", error: 'Error al obtener los tickets.' });
     }
 }
 getTicketById = async (req, res) => {

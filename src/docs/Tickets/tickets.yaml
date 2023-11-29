@@ -1,5 +1,5 @@
 paths:
-  /ticket:
+  /tickets:
     get:
       summary: Obtiene todos los tickets
       tags:

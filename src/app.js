@@ -2,6 +2,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
+const swaggerJsdoc = require('swagger-jsdoc')
+const swaggerUiExpress = require('swagger-ui-express')
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const http = require('http');
@@ -47,6 +49,20 @@ app.use(passport.session());
 
 // Conectarse a Mongoose
 mongoose.connect(mongoURL);
+
+// Swagger
+const swaggerOptions = {
+  definition:{
+    openapi:'3.0.1',
+    info:{
+      title:"Documentación Ecommerce Matías Ierace",
+      description:"API Swagger"
+    }
+  },
+  apis:[`${__dirname}/docs/**/*.yaml`]
+}
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/apidocs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))
 
 // Configurar el motor de plantillas y las rutas de vistas en la aplicación principal
 app.engine("handlebars", handlebars.engine())

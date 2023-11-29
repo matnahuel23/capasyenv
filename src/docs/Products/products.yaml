@@ -1,0 +1,52 @@
+paths:
+  /products:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - Productos
+      responses:
+        "200":
+          description: Los productos fueron obtenidos correctamente.
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o un fallo con la base de datos.
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Id autogenerado de Mongo
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        code:
+          type: number
+          description: Código del producto
+        price:
+          type: number
+          description: Precio del producto
+        status:
+          type: boolean
+          description: Estado del producto (activo/inactivo)
+        stock:
+          type: number
+          description: Cantidad en stock del producto
+        category:
+          type: string
+          enum: ["gaseosa", "vino", "cerveza"]
+          default: "gaseosa"
+          description: Categoría del producto
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Imágenes del producto
+        owner:
+          type: string
+          default: "admin"
+          description: "Propietario del producto (por defecto: admin)"

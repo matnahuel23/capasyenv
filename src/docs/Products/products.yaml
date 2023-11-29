@@ -50,3 +50,16 @@ components:
           type: string
           default: "admin"
           description: "Propietario del producto (por defecto: admin)"
+
+      example:
+        _id: "5f885be3b547644035f26353"
+        title: "Agüita con gas"
+        description: "Bebida refrescante con sabor a soda"
+        code: 12345
+        price: 1.99
+        status: true
+        stock: 100
+        category: "gaseosa"
+        thumbnails:
+          - "url1.jpg"
+        owner: "admin"

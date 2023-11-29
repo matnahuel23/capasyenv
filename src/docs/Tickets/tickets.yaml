@@ -40,3 +40,12 @@ components:
         total:
           type: number
           description: Total del ticket
+
+      example:
+        _id: "5f885be3b547644035f26354"
+        code: "ABC123"
+        purchase_datetime: "2023-01-01T12:30:00Z"
+        phone: "+1234567890"
+        email: "correo@example.com"
+        cart: "5f885be3b547644035f26355"
+        total: 50.99

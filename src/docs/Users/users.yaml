@@ -42,3 +42,13 @@ components:
         cart:
           type: string
           description: Id del carrito asociado al usuario
+
+      example:
+        _id: "5f885be3b547644035f26356"
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        age: 25
+        role: "user"
+        password: "$2a$10$examplehashexamplehashexamplehashexamplehashexamplehashexamplehashexamplehashexamplehash"
+        cart: "5f885be3b547644035f26357"

@@ -30,3 +30,11 @@ components:
         total:
           type: number
           description: Total del carrito
+
+      example:
+        products:
+          - product: "5f885be3b547644035f26353"
+            quantity: 2
+          - product: "5f885be3b547644035f26354"
+            quantity: 1
+        total: 45.99

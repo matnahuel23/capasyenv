@@ -35,8 +35,6 @@ paths:
                   status: true
                   stock: 100
                   category: "gaseosa"
-                  thumbnails:
-                    - "url1.jpg"
                   owner: "admin"
       responses:
         "201":
@@ -185,6 +183,4 @@ components:
         status: true
         stock: 100
         category: "gaseosa"
-        thumbnails:
-          - "url1.jpg"
         owner: "admin"

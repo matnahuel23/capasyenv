@@ -34,10 +34,25 @@ describe("Testing Users Dao Methods", ()=>{
         const result = await this.usersDao.createUser(mockUser)
         assert.ok(result._id)
     })
-    
+    it("El DAO debe encontrar un usuario por el email", async function(){
+        let mockUser={
+            first_name:"Usuario",
+            last_name:"Prueba",
+            email:"usuarioprueba@email.com",
+            password:"123456"
+        }
+        const result = await this.usersDao.createUser(mockUser)
+        const user = await this.usersDao.getUserByEmail(result.email)
+        assert.strictEqual(typeof user, 'object')
+    })
+
+}) 
+
+
+
+
 // está borrando todos los documentos en la colección "usuarios" antes de ejecutar cada prueba. 
 /*     beforeEach(function(){
         mongoose.connection.collections.usuarios.drop()
         this.timeout(5000)
     }) */
-}) 

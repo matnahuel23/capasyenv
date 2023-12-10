@@ -102,7 +102,7 @@ const configureGitHubStrategy = () => {
                     email:profile._json.email,
                     password:'', // al ser autentificacion de terceros, no podemos asignar un password
                     cart: newCart._id,
-                    role
+                    role: "user"
                 }
                 let result = await usersService.createUser(newUser)
                 done(null, result)

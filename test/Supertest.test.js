@@ -7,32 +7,45 @@ const supertest = require('supertest');
 const expect = chai.expect;
 const requester = supertest("http://localhost:8080");
 
-//Hace falta ingresa la cookie de la session ACTUAL
-const sessionCookie = 's%3AKOJ_ihOKKT62VCdGbC9fboU1mdSUTzk1.jAwmqsp%2FoI0L0mw%2FcL6VlDBTxMbruEf9zkjAqMdsHDw'; 
+const sessionCookie = 's%3AOtGZ3sXSO0ZxKjGSn1LWJCDtY7NmbwAI.2%2BRF00%2BET6lPdnv8OhoEFcJZmuP%2FfezKwy3hmFbFAkQ';
 
 describe("Testing SuperTest", () => {
+    const productMock = {
+        "title": "Producto Prueba",
+        "description": "Producto de Prueba",
+        "code": 1,
+        "price": 10,
+        "status": true,
+        "stock": 100,
+        "category": "gaseosa"
+    };
+
     describe("Test de productos", () => {
         it("El endpoint POST /products debe crear un producto correctamente", async () => {
-            const productMock = {
-                "title": "Producto X",
-                "description": "Producto de Prueba",
-                "code": 1,
-                "price": 10,
-                "status": true,
-                "stock": 100,
-                "category": "gaseosa"
+            try {
+                const { statusCode, _body } = await requester
+                    .post('/products')
+                    .set('Cookie', [`connect.sid=${sessionCookie}`])
+                    .send(productMock);
+                expect(_body.payload).to.have.property("_id");
+            } catch (error) {
+                console.error("Error during test:", error);
+                throw error;
             }
+        });
 
-            const {
-                statusCode,
-                ok,
-                _body
-            } = await requester
-                .post('/products')
-                .set('Cookie', [`connect.sid=${sessionCookie}`]) // Establece la cookie de sesión
-                .send(productMock);
+        it("Crear producto con propiedad STATUS", async () => {
+            try {
+                const { _body } = await requester
+                    .post('/products')
+                    .set('Cookie', [`connect.sid=${sessionCookie}`])
+                    .send(productMock);
 
-            expect(_body.payload).to.have.property("_id")
+                expect(_body.payload).to.have.property("status").to.be.true;
+            } catch (error) {
+                console.error("Error during test:", error);
+                throw error;
+            }
         });
     });
 });

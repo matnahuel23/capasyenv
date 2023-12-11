@@ -45,14 +45,4 @@ describe("Testing Users Dao Methods", ()=>{
         const user = await this.usersDao.getUserByEmail(result.email)
         assert.strictEqual(typeof user, 'object')
     })
-
 }) 
-
-
-
-
-// está borrando todos los documentos en la colección "usuarios" antes de ejecutar cada prueba. 
-/*     beforeEach(function(){
-        mongoose.connection.collections.usuarios.drop()
-        this.timeout(5000)
-    }) */

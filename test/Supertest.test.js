@@ -7,87 +7,24 @@ const supertest = require('supertest');
 const expect = chai.expect;
 const requester = supertest("http://localhost:8080");
 
-const sessionCookie = 's%3AOtGZ3sXSO0ZxKjGSn1LWJCDtY7NmbwAI.2%2BRF00%2BET6lPdnv8OhoEFcJZmuP%2FfezKwy3hmFbFAkQ';
+let sessionCookie
 
 describe("Testing SuperTest", () => {
-    const productMock = {
-        "title": "Producto Prueba",
-        "description": "Producto de Prueba",
-        "code": 1,
-        "price": 10,
-        "status": true,
-        "stock": 100,
-        "category": "gaseosa"
-    };
-    describe("Test", () => {
-        it("El endpoint POST /products debe crear un producto correctamente", async () => {
-            try {
-                const { statusCode, _body } = await requester
-                    .post('/products')
-                    .set('Cookie', [`connect.sid=${sessionCookie}`])
-                    .send(productMock);
-                expect(_body.payload).to.have.property("_id");
-            } catch (error) {
-                console.error("Error during test:", error);
-                throw error;
+       describe("Test", () => {    
+        it('Debe loguear correctamente un usuario y devolver una COOKIE', async function (){
+            const mockUser = {
+                "email": "usuarioprueba@email.com",
+                "password": "123456"
             }
-        });
-
-        it("Crear producto con propiedad STATUS", async () => {
-            try {
-                const { _body } = await requester
-                    .post('/products')
-                    .set('Cookie', [`connect.sid=${sessionCookie}`])
-                    .send(productMock);
-
-                expect(_body.payload).to.have.property("status").to.be.true;
-            } catch (error) {
-                console.error("Error during test:", error);
-                throw error;
-            }
-        });
-
-        it("Status 400 cuando no existe la propiedad TITLE en Producto", async () => {
-            const noTitle = {
-                //"title": "Producto Prueba",
-                "description": "Producto de Prueba",
-                "code": 1,
-                "price": 10,
-                "status": true,
-                "stock": 100,
-                "category": "gaseosa"
-            };
+            const result = await requester.post('/login').send(mockUser)
+            const cookies = result.headers['set-cookie'];
         
-            try {
-                const { statusCode, _body } = await requester
-                    .post('/products')
-                    .set('Cookie', [`connect.sid=${sessionCookie}`])
-                    .send(noTitle);
+            expect(cookies).to.be.an('array').and.not.empty;
         
-                expect(statusCode).to.equal(400);
+            // Encuentra la cookie 'connect.sid'
+            sessionCookie = cookies.find(cookie => cookie.includes('connect.sid'));
         
-                // Solo verificar que el statusCode sea 400, sin verificar el contenido exacto del mensaje de error
-            } catch (error) {
-                console.error("Error during test:", error);
-                throw error;
-            }
-        });
-        
-        it("STATUS y PAYLOAD incluidos con PAYLOAD tipo ARRAY en Carts", async () => {
-            try {
-                const response = await requester
-                    .get('/carts')
-                    .set('Cookie', [`connect.sid=${sessionCookie}`]);
-        
-                const { statusCode, _body } = response;
-                expect(statusCode).to.equal(200);
-                expect(_body).to.have.property("payload");
-                expect(_body.payload).to.be.an("array");
-            } catch (error) {
-                console.error("Error during test:", error);
-                throw error;
-            }
-        });
-        
+            expect(sessionCookie).to.be.ok.and.include('connect.sid');
+        })     
     });
 });

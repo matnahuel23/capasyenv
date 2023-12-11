@@ -19,8 +19,7 @@ describe("Testing SuperTest", () => {
         "stock": 100,
         "category": "gaseosa"
     };
-
-    describe("Test de productos", () => {
+    describe("Test", () => {
         it("El endpoint POST /products debe crear un producto correctamente", async () => {
             try {
                 const { statusCode, _body } = await requester
@@ -48,7 +47,7 @@ describe("Testing SuperTest", () => {
             }
         });
 
-        it("Status 400 cuando no existe la propiedad TITLE", async () => {
+        it("Status 400 cuando no existe la propiedad TITLE en Producto", async () => {
             const noTitle = {
                 //"title": "Producto Prueba",
                 "description": "Producto de Prueba",
@@ -73,6 +72,22 @@ describe("Testing SuperTest", () => {
                 throw error;
             }
         });
-                    
+        
+        it("STATUS y PAYLOAD incluidos con PAYLOAD tipo ARRAY en Carts", async () => {
+            try {
+                const response = await requester
+                    .get('/carts')
+                    .set('Cookie', [`connect.sid=${sessionCookie}`]);
+        
+                const { statusCode, _body } = response;
+                expect(statusCode).to.equal(200);
+                expect(_body).to.have.property("payload");
+                expect(_body.payload).to.be.an("array");
+            } catch (error) {
+                console.error("Error during test:", error);
+                throw error;
+            }
+        });
+        
     });
 });

@@ -80,43 +80,59 @@ createUser : (req, res, next) => {
         return res.redirect('/')
     })(req, res, next);
 },
-logUser: (req, res, next) => {
-    passport.authenticate('login', (err, user, info) => {
-        
+logUser: async (req, res, next) => {
+    passport.authenticate('login', async (err, user, info) => {
         // Genera un número aleatorio de 6 dígitos para la cookie
         const randomSessionID = generateRandomToken(6);
         res.cookie('sessionIDexpire', randomSessionID, { maxAge: 3600000 }); // Configura el tiempo de vida de la cookie en milisegundos (1 hora)
-        
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Error en el logueo' });
-        }
 
-        if (!user) {
-            if (info && info.message === 'Contraseña incorrecta.') {
-                return res.redirect('/');
-            } else {
-                // Usuario no encontrado, redirigir a /register
-                return res.redirect('/register');
+        try {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Error en el logueo' });
             }
-        }
 
-        // Usuario autenticado correctamente
-        req.session.user = {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            age: user.age,
-            email: user.email,
-            cart: user.cart,
-            role: user.role
-        };
+            if (!user) {
+                if (info && info.message === 'Contraseña incorrecta.') {
+                    return res.redirect('/');
+                } else {
+                    // Usuario no encontrado, redirigir a /register
+                    return res.redirect('/register');
+                }
+            }
 
-        if (user.email === admin) {
-            req.session.admin = true;
-            return res.redirect('/admin');
-        } else {
-            req.session.admin = false;
-            res.redirect('/products');
+            // Usuario autenticado correctamente
+            req.session.user = {
+                first_name: user.first_name,
+                last_name: user.last_name,
+                age: user.age,
+                email: user.email,
+                cart: user.cart,
+                role: user.role
+            };
+
+            // Actualiza la propiedad last_connection
+            /*  En caso que quiero tener un arreglo con todas las conexiones
+                const updatedUser = await usersService.updateUser(user._id, {
+                $push: { last_connection: { login: new Date() } }
+            }); */
+            const updatedUser = await usersService.updateUser(user._id, {
+                last_connection: { login: new Date() }
+            });            if (!updatedUser) {
+                console.error('Error al actualizar last_connection');
+                // Puedes decidir qué hacer en caso de error al actualizar la propiedad last_connection
+            }
+
+            if (user.email === admin) {
+                req.session.admin = true;
+                return res.redirect('/admin');
+            } else {
+                req.session.admin = false;
+                res.redirect('/products');
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Error interno del servidor' });
         }
     })(req, res, next);
 },

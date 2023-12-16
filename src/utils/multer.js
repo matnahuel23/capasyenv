@@ -19,4 +19,15 @@ const storage = multer.diskStorage({
   }
 });
 
-module.exports = multer({ storage: storage }).single('file');
+const multerConfig = multer({ storage: storage }).single('file');
+
+// Exporta la función de configuración de multer
+module.exports = (req, res, next) => {
+  multerConfig(req, res, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error al subir el archivo' });
+    }
+    next();
+  });
+};

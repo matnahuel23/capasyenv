@@ -6,6 +6,11 @@ const documentSchema = new mongoose.Schema({
   reference: { type: String }
 }, { _id: false });
 
+const connectionSchema = new mongoose.Schema({
+  login: { type: Date },
+  logout: { type: Date }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   first_name: { type: String },
   last_name: { type: String },
@@ -15,7 +20,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Carrito' },
   documents: { type: [documentSchema], default: [] }, // arreglo de documentos
-  last_connection: { type: Date }
+  last_connection: [connectionSchema], // arreglo de objetos de conexión
 }, { versionKey: false });
 
 userSchema.plugin(paginate);

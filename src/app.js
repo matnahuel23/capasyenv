@@ -43,10 +43,10 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
-initializePassport();
+
 app.use(passport.initialize());
 app.use(passport.session());
-
+initializePassport();
 // Conectarse a Mongoose
 mongoose.connect(mongoURL);
 

@@ -3,8 +3,8 @@ const passport = require ("passport")
 const { getProducts} = require ('../controllers/products.controller.js')
 const { createUser, logUser, restorePass, restorePassOk } = require ('../controllers/users.controller.js')
 const path = require ("path")
-
 const router = express.Router();
+const usersService = require ("../dao/factory/user.factory.js")
 
 // Rutas
 router.post('/register', createUser)
@@ -47,7 +47,21 @@ router.get('/failregister', async (req, res) => {
     res.send({ error: "Fallo el registro" });
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
+    try {
+        // Obtén el usuario actualizado con la última conexión al cerrar sesión
+        const user = req.session.user;
+        const foundUser = await usersService.getUserByEmail(user.email)
+        user._id = foundUser._id
+        if (user) {
+            const updatedUser = await usersService.updateUser(user._id, { last_connection: { logout: new Date() }});
+            if (!updatedUser) {
+                console.error('Error al actualizar last_connection_logout');
+            }
+        }
+    } catch (error) {
+        console.error('Error al actualizar last_connection_logout:', error);
+    }
     // El destroy elimina datos de sesión
     req.session.destroy(err => {
         if (!err) {

@@ -44,7 +44,8 @@ const configureLocalStrategy = () => {
                     age,
                     password: createHash(password),
                     cart: newCart._id,
-                    role
+                    role,
+                    last_connection: [{ login: new Date() }]
                 })
 
                 if (email === admin) {
@@ -102,12 +103,16 @@ const configureGitHubStrategy = () => {
                     email:profile._json.email,
                     password:'', // al ser autentificacion de terceros, no podemos asignar un password
                     cart: newCart._id,
-                    role: "user"
+                    role: "user",
+                    last_connection: [{ login: new Date() }]
                 }
                 let result = await usersService.createUser(newUser)
                 done(null, result)
             } else { // Si entra aca, es porque el usuario ya existia en nuestra BD
-                done(null, user)
+                    await usersService.updateUser(user._id, {
+                    last_connection: { login: new Date() }
+                });
+            done(null, user)
             }
         }catch(error){
             return done(error)
@@ -117,13 +122,17 @@ const configureGitHubStrategy = () => {
 const configureSerialization = () => { 
     // Serialización del usuario
     passport.serializeUser((user, done) => {
-        done(null, user._id);
+        done(null, user.email);
     });
-    // Deserialización del usuario
-    passport.deserializeUser(async (id, done) => {
-        let user = await usersService.getUserById(id);
-        done(null, user);
-    })
+    
+    passport.deserializeUser(async (email, done) => {
+        try {
+            let user = await usersService.getUserByEmail(email);
+            done(null, user);
+        } catch (error) {
+            done(error);
+        }
+    });
 }
 
 module.exports = initializePassport

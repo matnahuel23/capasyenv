@@ -6,9 +6,10 @@ const { createHash, isValidatePassword } = require ("../utils/bcrypt.js")
 const config = require ("../config/config.js")
 const { sendEmail, sendResetPasswordEmail } = require ("../utils/email.js")
 const jwt = require('jsonwebtoken');
-const { cookiePass } = require('../config/config.js');
+const { cookiePass } = require('../config/config.js')
 const admin = config.adminName
 const path = require('path');
+const multer = require('../utils/multer.js')
 
 const generateRandomToken = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -220,7 +221,9 @@ restorePassOk : async (req, res) =>  {
         const viewPath = path.join(__dirname, '../views/restorepassword.hbs');
         res.render(viewPath, { email})
     });
-}
+},
+uploadDocumentUser : async (req, res) => {
 
+}
 }
    

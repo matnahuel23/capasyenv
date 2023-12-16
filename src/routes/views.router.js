@@ -94,6 +94,10 @@ router.get('/githubcallback', passport.authenticate('github',{failureRedirect:'l
     // Nuestra estrategia nos devolvera al usuario, solo lo agregamos a nuestro objeto de sesión.
     req.session.user = req.user
     res.redirect('/products');
-})
+});
+
+router.get('/documents', (req, res) => {
+    res.render('documents.hbs')
+});
 
 module.exports = router

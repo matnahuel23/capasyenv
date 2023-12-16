@@ -5,7 +5,7 @@ const { getUsers,
         createUser, 
         updateUser, 
         deleteUser, 
-        uploadDocumentUser, 
+        uploadDocumentUser,
         upgradeUserToPremium } = require ('../controllers/users.controller.js')
 
 const router = Router()
@@ -17,8 +17,8 @@ router.post("/", createUser)
 router.put("/:uid", updateUser)
 router.delete("/:uid", deleteUser)
 // Nueva ruta para subir documentos
-router.post("/uid/documents", uploadDocumentUser)
+router.post("/documents/:uid", uploadDocumentUser)
 // Nueva ruta para actualizar a usuario premium
-router.put('/premium/:uid', upgradeUserToPremium);
+router.put("/premium/:uid", upgradeUserToPremium);
 
 module.exports = { router }

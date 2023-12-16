@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Documentos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <h1>Documentos</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="file">Seleccione un archivo:</label>
+    <input type="file" name="file" id="file" accept=".pdf, .doc, .docx">
+    <button type="submit">Subir Archivo</button>
+  </form>
+  <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
+  <a href="/products" class="btn btn-success float-right">Volver</a>
+</body>
+</html>

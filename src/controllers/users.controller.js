@@ -259,7 +259,15 @@ uploadDocumentUser: async (req, res, next) => {
             const result = await usersService.updateUser({ _id: userToUpdate._id }, userToUpdate);
             if (result.modifiedCount > 0) {
                 console.log('Documento subido exitosamente');
-                res.status(201).json({ message: 'Documento subido exitosamente' });
+                res.status(201).send(`
+                <script>
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Documento subido exitosamente',
+                        icon: 'success'
+                    });
+                </script>
+            `);
             } else {
                 console.error('Error al actualizar usuario o ningún documento modificado');
                 return res.status(404).json({ error: 'Usuario no encontrado o no se modificó ningún documento' });

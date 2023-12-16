@@ -97,7 +97,9 @@ router.get('/githubcallback', passport.authenticate('github',{failureRedirect:'l
 });
 
 router.get('/documents', (req, res) => {
-    res.render('documents.hbs')
+    const viewPath = path.join(__dirname, '../views/documents.hbs');
+    const { _id } = req.session.user;
+    res.render(viewPath, { _id })
 });
 
 module.exports = router

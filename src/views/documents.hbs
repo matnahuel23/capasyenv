@@ -7,12 +7,35 @@
 </head>
 <body>
   <h1>Documentos</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <label for="file">Seleccione un archivo:</label>
-    <input type="file" name="file" id="file" accept=".pdf, .doc, .docx">
-    <button type="submit">Subir Archivo</button>
+
+  <form action="/users/{{_id}}/documents" method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+          <label>
+              <input type="radio" name="fileType" value="identification" checked>
+              Identificación
+          </label>
+      </div>
+      <div class="mb-3">
+          <label>
+              <input type="radio" name="fileType" value="domicileProof">
+              Comprobante de domicilio
+          </label>
+      </div>
+      <div class="mb-3">
+          <label>
+              <input type="radio" name="fileType" value="accountStatement">
+              Comprobante de estado de cuenta
+          </label>
+      </div>
+      <div class="custom-file mb-3">
+          <input type="file" class="custom-file-input" id="customFile" name="customFile" accept=".pdf, .doc, .docx">
+          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Subir Archivo</button>
   </form>
+
   <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
   <a href="/products" class="btn btn-success float-right">Volver</a>
+
 </body>
 </html>

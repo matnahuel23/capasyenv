@@ -222,8 +222,32 @@ restorePassOk : async (req, res) =>  {
         res.render(viewPath, { email})
     });
 },
-uploadDocumentUser : async (req, res) => {
+uploadDocumentUser: async (req, res, next) => {
+    multer(req, res, async (err) => {
+        try {
+            if (err) {
+                return res.status(400).json({ error: 'Error al subir el documento' });
+            }
 
+            const userId = req.params.uid;
+            const { originalname, filename } = req.file;
+
+            const result = await usersService.updateUser(
+                { _id: userId },
+                { $push: { documents: { name: originalname, reference: `/img/documents/${filename}` } } }
+            );
+
+            if (result && result.nModified > 0) {
+                res.status(201).json({ message: 'Documento subido exitosamente' });
+            } else {
+                return res.status(404).json({ error: 'Usuario no encontrado o no se modificó ningún documento' });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    });
 }
+
 }
    

@@ -3,6 +3,7 @@ const paginate = require("mongoose-paginate-v2");
 
 const documentSchema = new mongoose.Schema({
   name: { type: String },
+  //type: String, enum: ["user", "admin", "premium"]
   reference: { type: String }
 }, { _id: false });
 
@@ -20,7 +21,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Carrito' },
   documents: { type: [documentSchema], default: [] }, // arreglo de documentos
-  last_connection: [connectionSchema], // arreglo de objetos de conexión
+  last_connection: [connectionSchema],
 }, { versionKey: false });
 
 userSchema.plugin(paginate);

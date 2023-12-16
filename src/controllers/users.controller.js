@@ -9,7 +9,8 @@ const jwt = require('jsonwebtoken');
 const { cookiePass } = require('../config/config.js')
 const admin = config.adminName
 const path = require('path');
-const multer = require('../utils/multer.js')
+const { ObjectId } = require('mongoose').Types;
+const multerConfig  = require('../utils/multer.js')
 
 const generateRandomToken = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -110,12 +111,6 @@ logUser: async (req, res, next) => {
                 cart: user.cart,
                 role: user.role
             };
-
-            // Actualiza la propiedad last_connection
-            /*  En caso que quiero tener un arreglo con todas las conexiones
-                const updatedUser = await usersService.updateUser(user._id, {
-                $push: { last_connection: { login: new Date() } }
-            }); */
             const updatedUser = await usersService.updateUser(user._id, {
                 last_connection: { login: new Date() }
             });            if (!updatedUser) {
@@ -239,31 +234,42 @@ restorePassOk : async (req, res) =>  {
     });
 },
 uploadDocumentUser: async (req, res, next) => {
-    multer(req, res, async (err) => {
+    const folderType = 'document';
+
+    multerConfig(folderType)(req, res, async (err) => {
         try {
             if (err) {
+                console.error('Error en multer:', err);
                 return res.status(400).json({ error: 'Error al subir el documento' });
             }
-
             const userId = req.params.uid;
             const { originalname, filename } = req.file;
-
-            const result = await usersService.updateUser(
-                { _id: userId },
-                { $push: { documents: { name: originalname, reference: `/img/documents/${filename}` } } }
-            );
-
-            if (result && result.nModified > 0) {
+            // Obtener el usuario antes de la actualización
+            const userToUpdate = await usersService.getUserById(userId);
+            if (!userToUpdate) {
+                console.error('Usuario no encontrado');
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            userToUpdate.documents.push({
+                name: originalname,
+                reference: `/img/documents/${filename}`
+            });
+            
+            const result = await usersService.updateUser({ _id: userToUpdate._id }, userToUpdate);
+            if (result.modifiedCount > 0) {
+                console.log('Documento subido exitosamente');
                 res.status(201).json({ message: 'Documento subido exitosamente' });
             } else {
+                console.error('Error al actualizar usuario o ningún documento modificado');
                 return res.status(404).json({ error: 'Usuario no encontrado o no se modificó ningún documento' });
             }
         } catch (error) {
-            console.error(error);
+            console.error('Error interno del servidor:', error);
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     });
-},
+}
+,
 upgradeUserToPremium: async (req, res) => {
     try {
       const userId = req.params.uid;

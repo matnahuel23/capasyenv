@@ -1,14 +1,20 @@
 const multer = require('multer');
+const fs = require('fs');
 
-const storage = multer.diskStorage({
+const storage = (type) => multer.diskStorage({
   destination: (req, file, cb) => {
     let folder;
-    if (req.body.type === 'profile') {
+    if (type === 'profile') {
       folder = 'src/public/img/profiles';
-    } else if (req.body.type === 'product') {
+    } else if (type === 'product') {
       folder = 'src/public/img/products';
     } else {
       folder = 'src/public/img/documents';
+    }
+
+    // Verificar si la carpeta existe, si no, la crea
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
     }
 
     cb(null, folder);
@@ -19,15 +25,6 @@ const storage = multer.diskStorage({
   }
 });
 
-const multerConfig = multer({ storage: storage }).single('file');
+const multerConfig = (type) => multer({ storage: storage(type) }).single('file');
 
-// Exporta la función de configuración de multer
-module.exports = (req, res, next) => {
-  multerConfig(req, res, (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Error al subir el archivo' });
-    }
-    next();
-  });
-};
+module.exports = multerConfig;

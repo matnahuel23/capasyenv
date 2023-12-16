@@ -17,7 +17,7 @@ router.post("/", createUser)
 router.put("/:uid", updateUser)
 router.delete("/:uid", deleteUser)
 // Nueva ruta para subir documentos
-router.post("/documents/:uid", uploadDocumentUser)
+router.post("/:uid/documents", uploadDocumentUser)
 // Nueva ruta para actualizar a usuario premium
 router.put("/premium/:uid", upgradeUserToPremium);
 

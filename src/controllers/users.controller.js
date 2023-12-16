@@ -243,7 +243,8 @@ uploadDocumentUser: async (req, res, next) => {
                 return res.status(400).json({ error: 'Error al subir el documento' });
             }
             const userId = req.params.uid;
-            const { originalname, filename } = req.file;
+            const fileType = req.body.fileTypeName; 
+            const { originalname, filename } = req.file;         
             // Obtener el usuario antes de la actualización
             const userToUpdate = await usersService.getUserById(userId);
             if (!userToUpdate) {
@@ -251,7 +252,7 @@ uploadDocumentUser: async (req, res, next) => {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
             userToUpdate.documents.push({
-                name: originalname,
+                name: fileType,
                 reference: `/img/documents/${filename}`
             });
             
@@ -268,8 +269,7 @@ uploadDocumentUser: async (req, res, next) => {
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     });
-}
-,
+},
 upgradeUserToPremium: async (req, res) => {
     try {
       const userId = req.params.uid;

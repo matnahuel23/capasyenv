@@ -4,11 +4,13 @@
     <title>Documentos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="/scripts/documentScript.js"></script>
 </head>
 <body>
     <h1>Documentos</h1>
 
-    <form action="/users/{{_id}}/documents" method="post" enctype="multipart/form-data">
+    <form id="documentForm" action="/users/{{_id}}/documents" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label>
                 <input type="radio" name="fileType" value="identification" checked>
@@ -31,20 +33,12 @@
             <input type="file" class="custom-file-input" id="customFile" name="file" accept=".pdf, .doc, .docx, .jpeg">
             <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
         </div>
+        <input type="hidden" name="fileTypeName" id="fileTypeName" value="">
         <button type="submit" class="btn btn-primary">Subir Archivo</button>
     </form>
 
     <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     <a href="/products" class="btn btn-success float-right">Volver</a>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#customFile').on('change', function () {
-                var fileName = $(this).val().split('\\').pop();
-                $(this).next('.custom-file-label').html(fileName);
-            });
-        });
-    </script>
 </body>
 </html>

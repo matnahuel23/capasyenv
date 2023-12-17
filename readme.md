@@ -1,5 +1,7 @@
 ## :hammer:4TA Práctica Integradora de BackEnd.
 
+* http://localhost:8080/ 
+
 * Usuario de pruebas
 
 user: user@test.com
@@ -59,3 +61,11 @@ password: 1
 * Mongo actualizo OK el rol de "user" a "premium"
 
 ![se actualiza MONGO con nuevo rol](src/public/prints/10-user%20premium%20ahora%20en%20mongo%20OK.png)
+
+* Nuevo acceso premium disponible
+
+![acceso premium](src/public/prints/11-usuario%20con%20acceso%20premium.png)
+
+* Permisos premium
+
+![permisos premium](src/public/prints/12-permisos%20premium.png)

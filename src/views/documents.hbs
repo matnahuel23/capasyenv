@@ -40,13 +40,61 @@
 
     <a href="/logout" class="btn btn-danger float-right">Desloguearse</a>
     <a href="/products" class="btn btn-success float-right">Volver</a>
-
+    <button id="premiumButton" class="btn btn-info float-right">Ser Premium</button>
     <script>
         // Maneja el cambio en el tipo de archivo seleccionado
         $('#customFile').change(function () {
             // Actualiza la etiqueta con el nombre del archivo seleccionado
             var fileName = $(this).val().split('\\').pop(); // Obtén solo el nombre del archivo (sin la ruta completa)
             $('.custom-file-label').text(fileName);
+        }); 
+        
+        $('#premiumButton').click(async function () {
+            try {
+                const response = await fetch(`/users/premium/{{_id}}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    if (responseData.message) {
+                        // Muestra un SweetAlert de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: responseData.message,
+                            timer: 2000
+                        });
+                    } else {
+                        // Muestra un SweetAlert de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: responseData.error || 'Hubo un error al actualizar a usuario premium.',
+                            timer: 2000
+                        });
+                    }
+                } else {
+                    // Muestra un SweetAlert de error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un error al actualizar a usuario premium.',
+                        timer: 2000
+                    });
+                }
+            } catch (error) {
+                // Muestra un SweetAlert de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al actualizar a usuario premium.',
+                    timer: 2000
+                });
+            }
         });
     </script>
 </body>

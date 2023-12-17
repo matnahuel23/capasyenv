@@ -104,6 +104,7 @@ logUser: async (req, res, next) => {
 
             // Usuario autenticado correctamente
             req.session.user = {
+                _id: user._id,
                 first_name: user.first_name,
                 last_name: user.last_name,
                 age: user.age,
@@ -280,40 +281,40 @@ uploadDocumentUser: async (req, res, next) => {
 },
 upgradeUserToPremium: async (req, res) => {
     try {
-      const userId = req.params.uid;
-      const user = await usersService.getUserById(userId);
-
-      if (!user) {
-        return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-
-      // Verificar si el usuario ha cargado los documentos necesarios
-      if (!user.documents || user.documents.length === 0) {
-        return res.status(400).json({ error: 'El usuario no ha cargado los documentos necesarios' });
-      }
-
-      // Verificar que los documentos necesarios estén presentes
-      const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
-
-      for (const doc of requiredDocuments) {
-        const hasDocument = user.documents.some((document) => document.name === doc);
-        if (!hasDocument) {
-          return res.status(400).json({ error: `Falta el documento: ${doc}` });
+        const userId = req.params.uid;
+        const user = await usersService.getUserById(userId);
+    
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-      }
-
-      // Actualizar el usuario a premium
-      const updatedUser = await usersService.updateUser(userId, { role: 'premium' });
-
-      if (!updatedUser) {
-        return res.status(500).json({ error: 'Error al actualizar el usuario a premium' });
-      }
-
-      res.status(200).json({ message: 'Usuario actualizado a premium exitosamente' });
+    
+        // Verificar si el usuario ha cargado los documentos necesarios
+        if (user.documents.length < 3) {
+            return res.status(400).json({ error: 'El usuario no ha cargado los documentos necesarios' });
+        }
+    
+        // Verificar que los documentos necesarios estén presentes
+        const requiredDocuments = ['identification', 'addressCertification', 'accountStatement'];
+        const foundDocuments = user.documents.filter((document) => requiredDocuments.includes(document.name));
+    
+        if (requiredDocuments.every(docType => foundDocuments.some(doc => doc.name === docType))) {
+            // Todos los tipos de documentos requeridos están presentes
+            const updatedUser = await usersService.updateUser(userId, { role: 'premium' });
+    
+            if (!updatedUser) {
+                return res.status(500).json({ error: 'Error al actualizar el usuario a premium' });
+            }
+    
+            return res.status(200).json({ message: 'Usuario actualizado a premium exitosamente' });
+        } else {
+            // Falta al menos un tipo de documento
+            const missingDocuments = requiredDocuments.filter(docType => !foundDocuments.some(doc => doc.name === docType));
+            return res.status(400).json({ error: `Falta el documento: ${missingDocuments.join(', ')}` });
+        }
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Error interno del servidor' });
-    }
+        console.error(error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }    
 }
 
 }
